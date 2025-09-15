@@ -1,0 +1,13 @@
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.csproj.AssemblyReference.cache
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/PluginInfo.cs
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.GeneratedMSBuildEditorConfig.editorconfig
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.AssemblyInfoInputs.cache
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.AssemblyInfo.cs
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.csproj.CoreCompileInputs.cache
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.sourcelink.json
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/bin/Debug/net472/AIOHHF.dll
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/bin/Debug/net472/AIOHHF.pdb
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/bin/Debug/net472/Nautilus.dll
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.csproj.Up2Date
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.dll
+/Users/coltwiedermann/Documents/GitHub/SeaVoyager/AIOHHF/AIOHHF/AIOHHF/obj/Debug/net472/AIOHHF.pdb
