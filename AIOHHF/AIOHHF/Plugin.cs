@@ -31,27 +31,33 @@ public class Plugin : BaseUnityPlugin
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
     {
         int secondaryiterator = 0;
+        int thirditerator = 0;
         foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
         {
-            if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None || treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2) continue;
-            task.Status = $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
-            Plugin.Logger.LogDebug(task.Status);
-           Items.Equipment.AIOHHF.AIOHHFFabricator.AddTabNode(CraftTree.GetTree(treeType).id + "AIOHHFTab",
-                CraftTree.GetTree(treeType).id,
-                SpriteManager.Get(TechType.Fabricator));
-            CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType)
-                .nodes[secondaryiterator]
-                .AddNode(CraftTree.GetTree(treeType).nodes);
+            Logger.LogDebug(treeType.ToString()+". we happy cause the enum exists now");
+            if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
+                treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AIOHHF.AIOHHFTreeType) continue;
+            task.Status =
+                $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
+            Logger.LogDebug(task.Status);
+            //Items.Equipment.AIOHHF.AIOHHFFabricator.AddTabNode(CraftTree.GetTree(treeType).id + "AIOHHFTab",
+                //CraftTree.GetTree(treeType).id,
+                //SpriteManager.Get(TechType.Fabricator));
+            
+            foreach (CraftNode node in CraftTree.GetTree(treeType).nodes)
+            {
+                task.Status = $"Creating AIOHHF Tree\nCurrent Tree: {CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType)}\nAdding Tree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}\nNode Iteration: {thirditerator}\nNode Added: {node.id}";
+                            Logger.LogDebug(task.Status);
+                CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType).nodes.nodes.Add(node);
+                thirditerator++;
+            }
             secondaryiterator++;
+            thirditerator++;
         }
-        
-
+        /*task.Status = "Creating AIOHHF Tree";
+        foreach (var tech in CraftTree.craftableTech)
+        {
+            Items.Equipment.AIOHHF.AIOHHFFabricator.AddCraftNode(tech);
+        }*/
     }
-}
-
-public class PluginInfo
-{
-    public const string PLUGIN_GUID = "com.lac aiohhf";
-    public const string PLUGIN_NAME =  "AIOHHF";
-    public const string PLUGIN_VERSION = "v0.0.1";
 }

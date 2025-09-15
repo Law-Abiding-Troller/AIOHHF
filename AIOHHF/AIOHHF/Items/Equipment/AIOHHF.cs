@@ -16,7 +16,7 @@ public class AIOHHF
 {
     public static PrefabInfo AIOHHFPrefabInfo;
     public static CustomPrefab AIOHHFPrefab;
-    public static FabricatorGadget AIOHHFFabricator;
+    public static FabricatorGadget AIOHHFFabricator {get;set;}
     public static Vector3 PostScaleValue;
     public static CraftTree.Type AIOHHFTreeType;
 
@@ -96,6 +96,9 @@ public class AIOHHF
         task.Status = "Setting Unlock";
         Plugin.Logger.LogDebug(task.Status);
         AIOHHFPrefab.SetUnlock(TechType.Peeper);
+        task.Status = "Registering AIOHHF Prefab";
+        Plugin.Logger.LogDebug(task.Status);
+        AIOHHFPrefab.Register();
         task.Status = "Done!";
         Plugin.Logger.LogDebug(task.Status);
     }
