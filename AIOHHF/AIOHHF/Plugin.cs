@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -23,6 +24,27 @@ public class Plugin : BaseUnityPlugin
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-        WaitScreenHandler.RegisterLateLoadTask("AIOHHF", Items.Equipment.AIOHHF.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
+        WaitScreenHandler.RegisterLateLoadTask("AIOHHF", CreateCraftTree, "Loading All-In-One Hand Held Fabricator");
+        Items.Equipment.AIOHHF.RegisterPrefab();
+    }
+
+    public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
+    {
+        int secondaryiterator = 0;
+        foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
+        {
+            if (treeType == CraftTree.Type.Constructor) continue;
+            task.Status = $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
+            Plugin.Logger.LogDebug(task.Status);
+           Items.Equipment.AIOHHF.AIOHHFFabricator.AddTabNode(CraftTree.GetTree(treeType).id + "AIOHHFTab",
+                CraftTree.GetTree(treeType).id,
+                SpriteManager.Get(TechType.Fabricator));
+            CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType)
+                .nodes[secondaryiterator]
+                .AddNode(CraftTree.GetTree(treeType).nodes);
+            secondaryiterator++;
+        }
+        
+
     }
 }

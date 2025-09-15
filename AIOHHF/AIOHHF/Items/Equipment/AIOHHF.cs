@@ -20,8 +20,9 @@ public class AIOHHF
     public static Vector3 PostScaleValue;
     public static CraftTree.Type AIOHHFTreeType;
 
-    public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
+    public static void RegisterPrefab()
     {
+        var task = new lazy("none");
         task.Status = "Creating AIOHHF PrefabInfo and TechType";
         Plugin.Logger.LogDebug(task.Status);
         AIOHHFPrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
@@ -34,21 +35,6 @@ public class AIOHHF
         task.Status = "Creating AIOHHF Tree";
         Plugin.Logger.LogDebug(task.Status);
         AIOHHFFabricator = AIOHHFPrefab.CreateFabricator(out AIOHHFTreeType);
-        int secondaryiterator = 0;
-        foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
-        {
-            if (treeType == CraftTree.Type.Constructor) continue;
-            task.Status = $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
-            Plugin.Logger.LogDebug(task.Status);
-            AIOHHFFabricator.AddTabNode(CraftTree.GetTree(treeType).id + "AIOHHFTab",
-                CraftTree.GetTree(treeType).id,
-                SpriteManager.Get(TechType.Fabricator));
-            CraftTree.GetTree(AIOHHFTreeType)
-                .nodes[secondaryiterator]
-                .AddNode(CraftTree.GetTree(treeType).nodes);
-            secondaryiterator++;
-        }
-
         task.Status = "Creating Object";
         Plugin.Logger.LogDebug(task.Status);
         var clone = new FabricatorTemplate(AIOHHFPrefabInfo, AIOHHFTreeType)
@@ -112,6 +98,15 @@ public class AIOHHF
         AIOHHFPrefab.SetUnlock(TechType.Peeper);
         task.Status = "Done!";
         Plugin.Logger.LogDebug(task.Status);
+    }
+}
+
+public class lazy
+{
+    public string Status;
+    public lazy(string status)
+    {
+        Status = status;
     }
 }
 public class HandHeldFabricator : PlayerTool
