@@ -48,3 +48,10 @@ public class Plugin : BaseUnityPlugin
 
     }
 }
+
+public class PluginInfo
+{
+    public const string PLUGIN_GUID = "com.lac aiohhf";
+    public const string PLUGIN_NAME =  "AIOHHF";
+    public const string PLUGIN_VERSION = "v0.0.1";
+}
