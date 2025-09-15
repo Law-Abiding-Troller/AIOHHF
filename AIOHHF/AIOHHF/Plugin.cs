@@ -33,7 +33,7 @@ public class Plugin : BaseUnityPlugin
         int secondaryiterator = 0;
         foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
         {
-            if (treeType == CraftTree.Type.Constructor) continue;
+            if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None || treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2) continue;
             task.Status = $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
             Plugin.Logger.LogDebug(task.Status);
            Items.Equipment.AIOHHF.AIOHHFFabricator.AddTabNode(CraftTree.GetTree(treeType).id + "AIOHHFTab",
