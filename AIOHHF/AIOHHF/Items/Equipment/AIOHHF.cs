@@ -16,25 +16,13 @@ public class AIOHHF
 {
     public static PrefabInfo AIOHHFPrefabInfo;
     public static CustomPrefab AIOHHFPrefab;
-    public static FabricatorGadget AIOHHFFabricator {get;set;}
+    public static FabricatorGadget AIOHHFFabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type AIOHHFTreeType;
 
     public static void RegisterPrefab()
     {
         var task = new lazy("none");
-        task.Status = "Creating AIOHHF PrefabInfo and TechType";
-        Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
-            "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held!" +
-            "\nEnergy consumption is the same as a normal Fabricator")
-            .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
-        task.Status = "Initializing AIOHHF Prefab";
-        Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab = new CustomPrefab(AIOHHFPrefabInfo);
-        task.Status = "Creating AIOHHF Tree";
-        Plugin.Logger.LogDebug(task.Status);
-        AIOHHFFabricator = AIOHHFPrefab.CreateFabricator(out AIOHHFTreeType);
         task.Status = "Creating Object";
         Plugin.Logger.LogDebug(task.Status);
         var clone = new FabricatorTemplate(AIOHHFPrefabInfo, AIOHHFTreeType)

@@ -4,6 +4,8 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using AIOHHF.Items.Equipment;
+using Nautilus.Assets;
+using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
 
 namespace AIOHHF;
@@ -25,11 +27,20 @@ public class Plugin : BaseUnityPlugin
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
         WaitScreenHandler.RegisterLateLoadTask("AIOHHF", CreateCraftTree, "Loading All-In-One Hand Held Fabricator");
-        Items.Equipment.AIOHHF.RegisterPrefab();
     }
 
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
     {
+        task.Status = "Creating AIOHHF PrefabInfo and TechType";
+        Plugin.Logger.LogDebug(task.Status);
+        Items.Equipment.AIOHHF.AIOHHFPrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
+                "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held!" +
+                "\nEnergy consumption is the same as a normal Fabricator")
+            .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
+        task.Status = "Initializing AIOHHF Prefab";
+        Plugin.Logger.LogDebug(task.Status);
+        Items.Equipment.AIOHHF.AIOHHFPrefab = new CustomPrefab(Items.Equipment.AIOHHF.AIOHHFPrefabInfo);
+        Items.Equipment.AIOHHF.AIOHHFFabricator = Items.Equipment.AIOHHF.AIOHHFPrefab.CreateFabricator(out Items.Equipment.AIOHHF.AIOHHFTreeType);
         int secondaryiterator = 0;
         int thirditerator = 0;
         foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
@@ -48,12 +59,13 @@ public class Plugin : BaseUnityPlugin
             {
                 task.Status = $"Creating AIOHHF Tree\nCurrent Tree: {CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType)}\nAdding Tree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}\nNode Iteration: {thirditerator}\nNode Added: {node.id}";
                             Logger.LogDebug(task.Status);
-                CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType).nodes.nodes.Add(node);
+                CraftTree.GetTree(Items.Equipment.AIOHHF.AIOHHFTreeType).nodes.AddNode(node);
                 thirditerator++;
             }
             secondaryiterator++;
             thirditerator++;
         }
+        Items.Equipment.AIOHHF.RegisterPrefab();
         /*task.Status = "Creating AIOHHF Tree";
         foreach (var tech in CraftTree.craftableTech)
         {
