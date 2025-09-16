@@ -7,6 +7,7 @@ using AIOHHF.Items.Equipment;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
+using Nautilus.Utility;
 
 namespace AIOHHF;
 
@@ -25,8 +26,9 @@ public class Plugin : BaseUnityPlugin
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
-        Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-        WaitScreenHandler.RegisterLateLoadTask("AIOHHF", CreateCraftTree, "Loading All-In-One Hand Held Fabricator");
+        Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
+        WaitScreenHandler.RegisterLateLoadTask(PluginInfo.PLUGIN_NAME, CreateCraftTree, "Loading All-In-One Hand Held Fabricator");
+        SaveUtils.RegisterOnQuitEvent(DeregisterPrefabs);
     }
 
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
@@ -71,5 +73,10 @@ public class Plugin : BaseUnityPlugin
         {
             Items.Equipment.AIOHHF.AIOHHFFabricator.AddCraftNode(tech);
         }*/
+    }
+
+    public static void DeregisterPrefabs()
+    {
+        Items.Equipment.AIOHHF.AIOHHFPrefab.Unregister();
     }
 }
