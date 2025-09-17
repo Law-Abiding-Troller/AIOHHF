@@ -39,10 +39,7 @@ public class AllInOneHandHeldFabricator
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
-                    if (craftNode.action == TreeAction.Expand)
-                    {
-                        AddNodesUnderTabs(craftNode, nodeRoot);
-                    }
+                    nodeRoot.AddNode(craftNode);
                 }
             }
 
@@ -145,7 +142,7 @@ public class AllInOneHandHeldFabricator
         Prefab.Register();*/
     }
 
-    public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
+    /*public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
     {
         root.AddNode(tab);
         foreach (CraftNode pernode in tab)
@@ -155,7 +152,7 @@ public class AllInOneHandHeldFabricator
                 AddNodesUnderTabs(pernode, root);
             }
         }
-    }
+    }*/
 }
 
 public class HandHeldFabricator : PlayerTool
