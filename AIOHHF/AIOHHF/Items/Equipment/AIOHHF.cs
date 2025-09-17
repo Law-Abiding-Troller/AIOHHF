@@ -20,9 +20,34 @@ public class AIOHHF
     public static Vector3 PostScaleValue;
     public static CraftTree.Type AIOHHFTreeType;
 
-    public static void RegisterPrefab()
+    public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
-        var task = new lazy("none");
+        task.Status = "Creating AIOHHF PrefabInfo and TechType";
+        Plugin.Logger.LogDebug(task.Status);
+        AIOHHFPrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
+                "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held!" +
+                "\nEnergy consumption is the same as a normal Fabricator")
+            .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
+        task.Status = "Initializing AIOHHF Prefab";
+        Plugin.Logger.LogDebug(task.Status);
+        AIOHHFPrefab = new CustomPrefab(AIOHHFPrefabInfo);
+        AIOHHFPrefab.CreateFabricator(out AIOHHFTreeType)
+            .Root.CraftTreeCreation = () =>
+        {
+            foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
+            {
+                if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
+                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AIOHHF.AIOHHFTreeType) continue;
+
+                var craftTreeToYoink = CraftTree.GetTree(treeType);
+                var currentTab = craftTreeToYoink.nodes.FindNodeById("");
+                var nodeRoot = new CraftNode("Root").AddNode(currentTab);
+                CraftTree.GetTree(AIOHHFTreeType).nodes.AddNode(new CraftNode("AIOHHF "+nodeRoot.id).AddNode(nodeRoot));
+            }
+
+            return CraftTree.GetTree(AIOHHFTreeType);
+        };
+        AIOHHFFabricator = AIOHHFPrefab.GetGadget<FabricatorGadget>();
         task.Status = "Creating Object";
         Plugin.Logger.LogDebug(task.Status);
         var clone = new FabricatorTemplate(AIOHHFPrefabInfo, AIOHHFTreeType)
@@ -92,14 +117,6 @@ public class AIOHHF
     }
 }
 
-public class lazy
-{
-    public string Status;
-    public lazy(string status)
-    {
-        Status = status;
-    }
-}
 public class HandHeldFabricator : PlayerTool
 {
     public Fabricator fab;
