@@ -35,7 +35,8 @@ public class AllInOneHandHeldFabricator
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
-                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType) continue;
+                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType
+                    || treeType == CraftTree.Type.Centrifuge) continue;
                 
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
