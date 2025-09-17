@@ -67,6 +67,6 @@ public class Plugin : BaseUnityPlugin
 
     public static void DeregisterPrefabs()
     {
-        Items.Equipment.AllInOneHandHeldFabricator.Prefab.Unregister();
+        //Items.Equipment.AllInOneHandHeldFabricator.Prefab.Unregister();
     }
 }
