@@ -73,7 +73,6 @@ public class AllInOneHandHeldFabricator
             }
         };
         Prefab.SetGameObject(clone);
-        Prefab.Register();
         var ingredients = new List<Ingredient>()
         {
             new Ingredient(TechType.Titanium, 3),
@@ -93,6 +92,7 @@ public class AllInOneHandHeldFabricator
             .WithCraftingTime(5f);
         Prefab.SetUnlock(TechType.Peeper);
         Prefab.SetEquipment(EquipmentType.Hand);
+        Prefab.Register();
     }
     public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
