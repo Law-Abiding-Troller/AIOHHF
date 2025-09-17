@@ -27,6 +27,53 @@ public class AllInOneHandHeldFabricator
                         "\nEnergy consumption is the same as a normal Fabricator")
                     .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
         Prefab = new CustomPrefab(PrefabInfo);
+        Prefab.CreateFabricator(out TreeType)
+            .Root.CraftTreeCreation = () =>
+        {
+            var nodeRoot = new CraftNode("Root");
+            foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
+            {
+                if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
+                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType) continue;
+                
+                var craftTreeToYoink = CraftTree.GetTree(treeType);
+                foreach (var craftNode in craftTreeToYoink.nodes)
+                {
+                    var currentTab = craftNode;
+                    if (craftNode.action == TreeAction.Expand)
+                    {
+                        AddNodesUnderTabs(craftNode, currentTab);
+                    }
+                }
+            }
+
+            return new CraftTree("AIOHHFCraftTree", nodeRoot);
+        };
+        Fabricator = Prefab.GetGadget<FabricatorGadget>();
+        var clone = new FabricatorTemplate(PrefabInfo, TreeType)
+        {
+            FabricatorModel = FabricatorTemplate.Model.Fabricator,
+            ModifyPrefab = prefab =>
+            { 
+                GameObject model = prefab.gameObject; 
+                model.transform.localScale = Vector3.one / 2f;
+                PostScaleValue = model.transform.localScale;
+                prefab.AddComponent<Pickupable>();
+                prefab.AddComponent<HandHeldFabricator>();
+                List<TechType> compatbats = new List<TechType>()
+                {
+                    TechType.Battery,
+                    TechType.PrecursorIonBattery
+                };
+                prefab.AddComponent<HandHeldRelay>().dontConnectToRelays = true;
+                PrefabUtils.AddEnergyMixin<HandHeldBatterySource>(prefab, 
+                    "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23", 
+                    TechType.Battery, compatbats);
+
+            }
+        };
+        Prefab.SetGameObject(clone);
+        Prefab.Register();
         var ingredients = new List<Ingredient>()
         {
             new Ingredient(TechType.Titanium, 3),
@@ -63,7 +110,6 @@ public class AllInOneHandHeldFabricator
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
                     var currentTab = craftNode;
-                    nodeRoot.AddNode(currentTab);
                     if (craftNode.action == TreeAction.Expand)
                     {
                         AddNodesUnderTabs(craftNode, currentTab);
@@ -74,8 +120,6 @@ public class AllInOneHandHeldFabricator
             return new CraftTree("AIOHHFCraftTree", nodeRoot);
         };
         Fabricator = Prefab.GetGadget<FabricatorGadget>();
-        task.Status = "Creating Object";
-        Plugin.Logger.LogDebug(task.Status);
         var clone = new FabricatorTemplate(PrefabInfo, TreeType)
         {
             FabricatorModel = FabricatorTemplate.Model.Fabricator,
@@ -98,14 +142,8 @@ public class AllInOneHandHeldFabricator
 
             }
         };
-        task.Status = "Setting Object";
-        Plugin.Logger.LogDebug(task.Status);
         Prefab.SetGameObject(clone);
-        task.Status = "Registering AIOHHF Prefab";
-        Plugin.Logger.LogDebug(task.Status);
         Prefab.Register();
-        task.Status = "Done!";
-        Plugin.Logger.LogDebug(task.Status);
     }
 
     public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
@@ -113,9 +151,9 @@ public class AllInOneHandHeldFabricator
         foreach (CraftNode pernode in tab)
         {
             var currentTab = pernode;
-            root.AddNode(currentTab);
             if (pernode.action == TreeAction.Expand)
             {
+                root.AddNode(currentTab);
                 AddNodesUnderTabs(pernode, currentTab);
             }
             
