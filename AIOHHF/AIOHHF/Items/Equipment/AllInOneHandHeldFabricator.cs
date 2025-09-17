@@ -44,10 +44,10 @@ public class AllInOneHandHeldFabricator
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
                     var currentTab = craftNode;
-                    currentTab.AddNode(currentTab);
+                    currentTreeTab.AddNode(currentTab);
                     if (craftTreeToYoink.nodes.action == TreeAction.Expand)
                     {
-                        AddNodesUnderTabs(craftNode, currentTab);
+                        AddNodesUnderTabs(craftNode, currentTreeTab);
                     }
                 }
             }
