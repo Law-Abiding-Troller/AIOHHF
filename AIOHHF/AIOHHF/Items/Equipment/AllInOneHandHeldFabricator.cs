@@ -154,12 +154,6 @@ public class AllInOneHandHeldFabricator
             {
                 AddNodesUnderTabs(pernode, root);
             }
-
-            if (pernode.action == TreeAction.Craft)
-            {
-                root.AddNode(pernode);
-            }
-            
         }
     }
 }
