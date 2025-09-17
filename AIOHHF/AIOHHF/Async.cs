@@ -13,6 +13,7 @@ public class Async
     {
         foreach (TechType techType in Enum.GetValues(typeof(TechType)))
         {
+            task.Status = $"Getting prefab for {techType}";
             CoroutineTask<GameObject> prefab = CraftData.GetPrefabForTechTypeAsync(techType);
             yield return prefab;
             GameObject possibleCrafter = prefab.GetResult();
