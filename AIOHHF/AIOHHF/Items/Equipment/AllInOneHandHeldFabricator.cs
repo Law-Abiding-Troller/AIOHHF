@@ -97,7 +97,7 @@ public class AllInOneHandHeldFabricator
     public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
         
-        Prefab.CreateFabricator(out TreeType)
+        /*Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
             var nodeRoot = new CraftNode("Root");
@@ -143,7 +143,7 @@ public class AllInOneHandHeldFabricator
             }
         };
         Prefab.SetGameObject(clone);
-        Prefab.Register();
+        Prefab.Register();*/
     }
 
     public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
