@@ -12,45 +12,52 @@ using Random = UnityEngine.Random;
 
 namespace AIOHHF.Items.Equipment;
 
-public class AIOHHF
+public class AllInOneHandHeldFabricator
 {
-    public static PrefabInfo AIOHHFPrefabInfo;
-    public static CustomPrefab AIOHHFPrefab;
-    public static FabricatorGadget AIOHHFFabricator;
+    public static PrefabInfo PrefabInfo;
+    public static CustomPrefab Prefab;
+    public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
-    public static CraftTree.Type AIOHHFTreeType;
+    public static CraftTree.Type TreeType;
 
     public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
         task.Status = "Creating AIOHHF PrefabInfo and TechType";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
+        PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
                 "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held!" +
                 "\nEnergy consumption is the same as a normal Fabricator")
             .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
         task.Status = "Initializing AIOHHF Prefab";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab = new CustomPrefab(AIOHHFPrefabInfo);
-        AIOHHFPrefab.CreateFabricator(out AIOHHFTreeType)
+        Prefab = new CustomPrefab(PrefabInfo);
+        Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
+            var nodeRoot = new CraftNode("Root");
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
-                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AIOHHF.AIOHHFTreeType) continue;
+                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AllInOneHandHeldFabricator.TreeType) continue;
 
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
-                var currentTab = craftTreeToYoink.nodes.FindNodeById("");
-                var nodeRoot = new CraftNode("Root").AddNode(currentTab);
-                CraftTree.GetTree(AIOHHFTreeType).nodes.AddNode(new CraftNode("AIOHHF "+nodeRoot.id).AddNode(nodeRoot));
+                foreach (var craftNode in craftTreeToYoink.nodes)
+                {
+                    var currentTab = craftNode;
+                    nodeRoot.AddNode(currentTab);
+                    if (craftTreeToYoink.nodes.action == TreeAction.Expand)
+                    {
+                        AddNodesUnderTabs(craftNode, nodeRoot);
+                    }
+                }
             }
 
-            return CraftTree.GetTree(AIOHHFTreeType);
+            return new CraftTree("AIOHHFCraftTree", nodeRoot);
         };
-        AIOHHFFabricator = AIOHHFPrefab.GetGadget<FabricatorGadget>();
+        Fabricator = Prefab.GetGadget<FabricatorGadget>();
         task.Status = "Creating Object";
         Plugin.Logger.LogDebug(task.Status);
-        var clone = new FabricatorTemplate(AIOHHFPrefabInfo, AIOHHFTreeType)
+        var clone = new FabricatorTemplate(PrefabInfo, TreeType)
         {
             FabricatorModel = FabricatorTemplate.Model.Fabricator,
             ModifyPrefab = prefab =>
@@ -84,10 +91,10 @@ public class AIOHHF
         };
         task.Status = "Setting Object";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab.SetGameObject(clone);
+        Prefab.SetGameObject(clone);
         task.Status = "Setting Recipe";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab.SetRecipe(new RecipeData()
+        Prefab.SetRecipe(new RecipeData()
         {
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
@@ -105,15 +112,27 @@ public class AIOHHF
         .WithCraftingTime(5f);
         task.Status = "Setting Equipment Type";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab.SetEquipment(EquipmentType.Hand);
+        Prefab.SetEquipment(EquipmentType.Hand);
         task.Status = "Setting Unlock";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab.SetUnlock(TechType.Peeper);
+        Prefab.SetUnlock(TechType.Peeper);
         task.Status = "Registering AIOHHF Prefab";
         Plugin.Logger.LogDebug(task.Status);
-        AIOHHFPrefab.Register();
+        Prefab.Register();
         task.Status = "Done!";
         Plugin.Logger.LogDebug(task.Status);
+    }
+
+    public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
+    {
+        foreach (CraftNode pernode in tab)
+        {
+            if (pernode.action == TreeAction.Expand)
+            {
+                AddNodesUnderTabs(pernode, root);
+            }
+            root.AddNode(pernode);
+        }
     }
 }
 
@@ -135,13 +154,13 @@ public class HandHeldFabricator : PlayerTool
     {
         Plugin.Logger.LogDebug($"OnRightHandDown: {relay.inboundPowerSources.Count},{relay.GetPower()}, {battery.connectedRelay}, {battery.enabled}, {battery.charge}");
         fab.opened = true;
-        uGUI.main.craftingMenu.Open(AIOHHF.AIOHHFFabricator.CraftTreeType, fab);
+        uGUI.main.craftingMenu.Open(AllInOneHandHeldFabricator.Fabricator.CraftTreeType, fab);
         return true;
     }
 
     public void Update()
     {
-        gameObject.transform.localScale = AIOHHF.PostScaleValue;
+        gameObject.transform.localScale = AllInOneHandHeldFabricator.PostScaleValue;
     }
 
     public override void OnDraw(Player p)
