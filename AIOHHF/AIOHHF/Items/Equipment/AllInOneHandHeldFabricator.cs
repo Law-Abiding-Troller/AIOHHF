@@ -39,7 +39,7 @@ public class AllInOneHandHeldFabricator
                 
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
-                AddIconForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                AddIconForNode(treeType, craftTreeTab, schemeId);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
                     AddIconForNode(craftTreeToYoink, craftNode, schemeId);
@@ -154,6 +154,14 @@ public class AllInOneHandHeldFabricator
                 SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", origIcon);
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
+        }
+    }
+    public static void AddIconForNode(CraftTree.Type treeType, CraftNode node, string schemeId)
+    {
+        if (node.action == TreeAction.Expand)
+        {
+            if (!Async.CrafterTechTypes.TryGetValue(treeType, out var techType)) return;
+            SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(techType));
         }
     }
 }
