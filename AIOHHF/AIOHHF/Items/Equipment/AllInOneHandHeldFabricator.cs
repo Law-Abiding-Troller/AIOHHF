@@ -145,12 +145,12 @@ public class AllInOneHandHeldFabricator
 
     public static void AddIconForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme)
     {
-        var origIcon = SpriteManager.Get(SpriteManager.Group.Item, $"{origTreeScheme.id}Menu_{node.id}");
-        SpriteHandler.RegisterSprite(SpriteManager.Group.Item, $"{newTreeScheme}Menu_{node.id}", origIcon);
         if (node.action == TreeAction.Expand)
         {
             foreach (var nodes in node)
             {
+                var origIcon = SpriteManager.Get(SpriteManager.Group.Item, $"{origTreeScheme.id}Menu_{node.id}");
+                SpriteHandler.RegisterSprite(SpriteManager.Group.Item, $"{newTreeScheme}Menu_{node.id}", origIcon);
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
         }
