@@ -150,7 +150,7 @@ public class AllInOneHandHeldFabricator
             foreach (var nodes in node)
             {
                 var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{node.id}");
-                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}Menu_{node.id}", origIcon);
+                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", origIcon);
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
         }
