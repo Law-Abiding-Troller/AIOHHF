@@ -11,7 +11,7 @@ public class Async //Implementation 1
     public static Dictionary<CraftTree.Type, TechType> CrafterTechTypes = new();
     public static IEnumerator GetTechTypeForCraftersAsync(WaitScreenHandler.WaitScreenTask task)
     {
-        for (int i = 10024; i < Enum.GetValues(typeof(TechType)).Length; i++)
+        for (int i = 10000; i < Enum.GetValues(typeof(TechType)).Length; i++)
         {
             TechType techType = (TechType)i;
             task.Status = $"Getting prefab for {techType}";
