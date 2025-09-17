@@ -27,7 +27,7 @@ public class Plugin : BaseUnityPlugin
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
-        WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Async.GetTechTypeForCrafters, "Loading All-In-One Hand Held Fabricator");
+        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Async.GetTechTypeForCraftersAsync, "Loading All-In-One Hand Held Fabricator");
         SaveUtils.RegisterOnQuitEvent(DeregisterPrefabs);
         AllInOneHandHeldFabricator.Initialize();
     }

@@ -39,7 +39,24 @@ public class AllInOneHandHeldFabricator
                 
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
-                AddIconForNode(treeType, craftTreeTab, schemeId);
+                switch (treeType)
+                {
+                    case CraftTree.Type.Fabricator:
+                        AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
+                        break;
+                    case CraftTree.Type.CyclopsFabricator:
+                        AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
+                        break;
+                    case CraftTree.Type.MapRoom:
+                        AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
+                        break;
+                    case CraftTree.Type.SeamothUpgrades:
+                        AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
+                        break;
+                    case CraftTree.Type.Workbench:
+                        AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
+                        break;
+                }
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
                     AddIconForNode(craftTreeToYoink, craftNode, schemeId);
@@ -162,6 +179,13 @@ public class AllInOneHandHeldFabricator
         {
             if (!Async.CrafterTechTypes.TryGetValue(treeType, out var techType)) return;
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(techType));
+        }
+    }
+    public static void AddIconForNode(TechType treeType, CraftNode node, string schemeId)
+    {
+        if (node.action == TreeAction.Expand)
+        {
+            SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(treeType));
         }
     }
 }
