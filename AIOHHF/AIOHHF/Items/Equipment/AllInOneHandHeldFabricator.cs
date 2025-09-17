@@ -57,7 +57,7 @@ public class AllInOneHandHeldFabricator
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
                         break;
                     default:
-                        AddIconForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddIconForNode(treeType, craftTreeTab, schemeId);
                         break;
                 }
                 foreach (var craftNode in craftTreeToYoink.nodes)
