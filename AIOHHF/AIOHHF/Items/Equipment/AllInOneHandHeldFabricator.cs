@@ -40,6 +40,7 @@ public class AllInOneHandHeldFabricator
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
                     treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AllInOneHandHeldFabricator.TreeType) continue;
                 var currentTreeTab = nodeRoot.AddNode(new CraftNode(nameof(treeType)));
+                currentTreeTab.action = TreeAction.Expand;
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
