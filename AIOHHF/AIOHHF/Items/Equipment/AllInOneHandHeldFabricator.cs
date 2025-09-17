@@ -145,8 +145,8 @@ public class AllInOneHandHeldFabricator
 
     public static void AddIconForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme)
     {
-        var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}Menu_{node.id}");
-        SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}Menu_{node.id}", origIcon);
+        var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{node.id}");
+        SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", origIcon);
         if (node.action == TreeAction.Expand)
         {
             foreach (var nodes in node)
@@ -162,12 +162,14 @@ public class HandHeldFabricator : PlayerTool
     public Fabricator fab;
     public PowerRelay relay;
     public HandHeldBatterySource battery;
+    public StorageContainer storageContainer;
     public override void Awake()
     {
         fab = gameObject.GetComponent<Fabricator>();
         relay = gameObject.GetComponent<PowerRelay>();
         fab.powerRelay = relay;
         battery = gameObject.GetComponent<HandHeldBatterySource>();
+        storageContainer = gameObject.GetComponent<StorageContainer>();
         battery.connectedRelay = relay;
         relay.AddInboundPower(battery);
     }
@@ -176,6 +178,22 @@ public class HandHeldFabricator : PlayerTool
         Plugin.Logger.LogDebug($"OnRightHandDown: {relay.inboundPowerSources.Count},{relay.GetPower()}, {battery.connectedRelay}, {battery.enabled}, {battery.charge}");
         fab.opened = true;
         uGUI.main.craftingMenu.Open(AllInOneHandHeldFabricator.Fabricator.CraftTreeType, fab);
+        return true;
+    }
+
+    public override bool OnAltDown()
+    {
+        if (!storageContainer.open && storageContainer != null && storageContainer.container != null)
+        {
+            var allowedtech = new[]
+            {
+                TechType.PowerCell
+            };
+            storageContainer.container._label =  "ALL IN ONE HAND HELD FABRICATOR";
+            storageContainer.container.SetAllowedTechTypes(allowedtech);
+            storageContainer.Open();
+        }
+
         return true;
     }
 
