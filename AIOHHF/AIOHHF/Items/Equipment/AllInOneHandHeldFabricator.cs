@@ -20,17 +20,36 @@ public class AllInOneHandHeldFabricator
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
 
+    public static void Initialize()
+    {
+        PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
+                        "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held(tm)!" +
+                        "\nEnergy consumption is the same as a normal Fabricator")
+                    .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
+        Prefab = new CustomPrefab(PrefabInfo);
+        var ingredients = new List<Ingredient>()
+        {
+            new Ingredient(TechType.Titanium, 3),
+            new Ingredient(TechType.ComputerChip, 2),
+            new Ingredient(TechType.WiringKit, 1),
+            new Ingredient(TechType.Diamond, 1),
+            new Ingredient(TechType.AluminumOxide, 1),
+            new Ingredient(TechType.Magnetite, 1)
+        };
+        Prefab.SetRecipe(new RecipeData()
+            {
+                craftAmount = 1,
+                Ingredients = ingredients
+            })
+            .WithFabricatorType(CraftTree.Type.Fabricator)
+            .WithStepsToFabricatorTab("Personal","Tools")
+            .WithCraftingTime(5f);
+        Prefab.SetUnlock(TechType.Peeper);
+        Prefab.SetEquipment(EquipmentType.Hand);
+    }
     public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
-        task.Status = "Creating AIOHHF PrefabInfo and TechType";
-        Plugin.Logger.LogDebug(task.Status);
-        PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
-                "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held!" +
-                "\nEnergy consumption is the same as a normal Fabricator")
-            .WithIcon(SpriteManager.Get(TechType.Fabricator)).WithSizeInInventory(new Vector2int(2,2));
-        task.Status = "Initializing AIOHHF Prefab";
-        Plugin.Logger.LogDebug(task.Status);
-        Prefab = new CustomPrefab(PrefabInfo);
+        
         Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
@@ -38,17 +57,16 @@ public class AllInOneHandHeldFabricator
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
-                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AllInOneHandHeldFabricator.TreeType) continue;
-                var currentTreeTab = nodeRoot.AddNode(new CraftNode(nameof(treeType)));
-                currentTreeTab.action = TreeAction.Expand;
+                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType) continue;
+                
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
                     var currentTab = craftNode;
-                    currentTreeTab.AddNode(currentTab);
-                    if (craftTreeToYoink.nodes.action == TreeAction.Expand)
+                    nodeRoot.AddNode(currentTab);
+                    if (craftNode.action == TreeAction.Expand)
                     {
-                        AddNodesUnderTabs(craftNode, currentTreeTab);
+                        AddNodesUnderTabs(craftNode, currentTab);
                     }
                 }
             }
@@ -63,27 +81,17 @@ public class AllInOneHandHeldFabricator
             FabricatorModel = FabricatorTemplate.Model.Fabricator,
             ModifyPrefab = prefab =>
             { 
-                task.Status = "Creating Object\nModifying Fabricator Prefab\nScaling down by half...";
-                Plugin.Logger.LogDebug(task.Status);
                 GameObject model = prefab.gameObject; 
                 model.transform.localScale = Vector3.one / 2f;
                 PostScaleValue = model.transform.localScale;
-                task.Status = "Creating Object\nModifying Fabricator Prefab\nAdding Pickupable Component...";
-                Plugin.Logger.LogDebug(task.Status);
                 prefab.AddComponent<Pickupable>();
-                task.Status = "Creating Object\nModifying Fabricator Prefab\nAdding HandHeldFabricator Component...";
-                Plugin.Logger.LogDebug(task.Status);
                 prefab.AddComponent<HandHeldFabricator>();
-                task.Status = "Creating Object\nModifying Fabricator Prefab\nAdding HandHeldRelay Component...";
-                Plugin.Logger.LogDebug(task.Status);
                 List<TechType> compatbats = new List<TechType>()
                 {
                     TechType.Battery,
                     TechType.PrecursorIonBattery
                 };
                 prefab.AddComponent<HandHeldRelay>().dontConnectToRelays = true;
-                task.Status = "Creating Object\nModifying Fabricator Prefab\nAdding HandHeldBatterySource Component...";
-                Plugin.Logger.LogDebug(task.Status);
                 PrefabUtils.AddEnergyMixin<HandHeldBatterySource>(prefab, 
                     "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23", 
                     TechType.Battery, compatbats);
@@ -93,30 +101,6 @@ public class AllInOneHandHeldFabricator
         task.Status = "Setting Object";
         Plugin.Logger.LogDebug(task.Status);
         Prefab.SetGameObject(clone);
-        task.Status = "Setting Recipe";
-        Plugin.Logger.LogDebug(task.Status);
-        Prefab.SetRecipe(new RecipeData()
-        {
-            craftAmount = 1,
-            Ingredients = new List<Ingredient>()
-            {
-                new Ingredient(TechType.Titanium, 3),
-                new Ingredient(TechType.ComputerChip, 2),
-                new Ingredient(TechType.WiringKit, 1),
-                new Ingredient(TechType.Diamond, 1),
-                new Ingredient(TechType.AluminumOxide, 1),
-                new Ingredient(TechType.Magnetite, 1)
-            }
-        })
-        .WithFabricatorType(CraftTree.Type.Fabricator)
-        .WithStepsToFabricatorTab("Personal","Tools")
-        .WithCraftingTime(5f);
-        task.Status = "Setting Equipment Type";
-        Plugin.Logger.LogDebug(task.Status);
-        Prefab.SetEquipment(EquipmentType.Hand);
-        task.Status = "Setting Unlock";
-        Plugin.Logger.LogDebug(task.Status);
-        Prefab.SetUnlock(TechType.Peeper);
         task.Status = "Registering AIOHHF Prefab";
         Plugin.Logger.LogDebug(task.Status);
         Prefab.Register();
@@ -128,11 +112,13 @@ public class AllInOneHandHeldFabricator
     {
         foreach (CraftNode pernode in tab)
         {
+            var currentTab = pernode;
+            root.AddNode(currentTab);
             if (pernode.action == TreeAction.Expand)
             {
-                AddNodesUnderTabs(pernode, root);
+                AddNodesUnderTabs(pernode, currentTab);
             }
-            root.AddNode(pernode);
+            
         }
     }
 }

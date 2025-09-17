@@ -29,6 +29,7 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         WaitScreenHandler.RegisterLateLoadTask(PluginInfo.PLUGIN_NAME, Items.Equipment.AllInOneHandHeldFabricator.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
         SaveUtils.RegisterOnQuitEvent(DeregisterPrefabs);
+        AllInOneHandHeldFabricator.Initialize();
     }
 
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
