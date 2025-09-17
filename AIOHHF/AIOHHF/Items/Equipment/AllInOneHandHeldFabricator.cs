@@ -37,13 +37,12 @@ public class AllInOneHandHeldFabricator
                     treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType) continue;
                 
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
+                var craftTreeTab = new CraftNode(treeType.ToString(), TreeAction.Expand);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
-                    if (craftNode.action == TreeAction.Expand)
-                    {
-                        nodeRoot.AddNode(craftNode);
-                    }
+                    craftTreeTab.AddNode(craftNode);
                 }
+                nodeRoot.AddNode(craftTreeTab);
             }
 
             return new CraftTree("AIOHHFCraftTree", nodeRoot);
@@ -75,11 +74,7 @@ public class AllInOneHandHeldFabricator
         var ingredients = new List<Ingredient>()
         {
             new Ingredient(TechType.Titanium, 3),
-            new Ingredient(TechType.ComputerChip, 2),
-            new Ingredient(TechType.WiringKit, 1),
-            new Ingredient(TechType.Diamond, 1),
-            new Ingredient(TechType.AluminumOxide, 1),
-            new Ingredient(TechType.Magnetite, 1)
+            new Ingredient(TechType.CopperWire, 2)
         };
         Prefab.SetRecipe(new RecipeData()
             {
