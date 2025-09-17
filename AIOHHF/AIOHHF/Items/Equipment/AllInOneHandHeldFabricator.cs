@@ -31,6 +31,7 @@ public class AllInOneHandHeldFabricator
             .Root.CraftTreeCreation = () =>
         {
             var nodeRoot = new CraftNode("Root");
+            const string schemeId = "AIOHHFCraftTree";
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
@@ -40,12 +41,13 @@ public class AllInOneHandHeldFabricator
                 var craftTreeTab = new CraftNode(treeType.ToString(), TreeAction.Expand);
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
+                    AddIconForNode(craftTreeToYoink, craftNode, schemeId);
                     craftTreeTab.AddNode(craftNode);
                 }
                 nodeRoot.AddNode(craftTreeTab);
             }
 
-            return new CraftTree("AIOHHFCraftTree", nodeRoot);
+            return new CraftTree(schemeId, nodeRoot);
         };
         Fabricator = Prefab.GetGadget<FabricatorGadget>();
         var clone = new FabricatorTemplate(PrefabInfo, TreeType)
@@ -58,6 +60,7 @@ public class AllInOneHandHeldFabricator
                 PostScaleValue = model.transform.localScale;
                 prefab.AddComponent<Pickupable>();
                 prefab.AddComponent<HandHeldFabricator>();
+                PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
                 List<TechType> compatbats = new List<TechType>()
                 {
                     TechType.Battery,
@@ -140,17 +143,18 @@ public class AllInOneHandHeldFabricator
         Prefab.Register();*/
     }
 
-    /*public static void AddNodesUnderTabs(CraftNode tab,CraftNode root)
+    public static void AddIconForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme)
     {
-        root.AddNode(tab);
-        foreach (CraftNode pernode in tab)
+        var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}Menu_{node.id}");
+        SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}Menu_{node.id}", origIcon);
+        if (node.action == TreeAction.Expand)
         {
-            if (pernode.action == TreeAction.Expand)
+            foreach (var nodes in node)
             {
-                AddNodesUnderTabs(pernode, root);
+                AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
         }
-    }*/
+    }
 }
 
 public class HandHeldFabricator : PlayerTool
