@@ -188,7 +188,6 @@ public class AllInOneHandHeldFabricator
         if (node.action == TreeAction.Expand)
         {
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(treeType));
-            AddIconForNode(treeType, node, schemeId);
         }
     }
 
