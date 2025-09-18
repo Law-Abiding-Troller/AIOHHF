@@ -44,21 +44,26 @@ public class AllInOneHandHeldFabricator
                 {
                     case CraftTree.Type.Fabricator:
                         AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
+                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.CyclopsFabricator:
                         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
+                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.MapRoom:
                         AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
+                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.SeamothUpgrades:
                         AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
+                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.Workbench:
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
+                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                     default:
-                        AddIconForNode(treeType, craftTreeTab, schemeId);
+                        AddIconForNode(craftTreeToYoink, craftTreeTab, schemeId);
                         break;
                 }
                 foreach (var craftNode in craftTreeToYoink.nodes)
@@ -173,16 +178,9 @@ public class AllInOneHandHeldFabricator
             {
                 var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{node.id}");
                 SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", origIcon);
+                AddLanguageForNode(origTreeScheme, node, newTreeScheme);
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
-        }
-    }
-    public static void AddIconForNode(CraftTree.Type treeType, CraftNode node, string schemeId)
-    {
-        if (node.action == TreeAction.Expand)
-        {
-            if (!Async.CrafterTechTypes.TryGetValue(treeType, out var techType)) return;
-            SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(techType));
         }
     }
     public static void AddIconForNode(TechType treeType, CraftNode node, string schemeId)
@@ -190,6 +188,20 @@ public class AllInOneHandHeldFabricator
         if (node.action == TreeAction.Expand)
         {
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(treeType));
+            AddIconForNode(treeType, node, schemeId);
+        }
+    }
+
+    public static void AddLanguageForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme)
+    {
+        if (node.action == TreeAction.Expand)
+        {
+            foreach (var nodes in node)
+            {
+                var origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");
+                LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
+                AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
+            }
         }
     }
 }
