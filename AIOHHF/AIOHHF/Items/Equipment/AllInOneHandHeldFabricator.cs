@@ -44,23 +44,23 @@ public class AllInOneHandHeldFabricator
                 {
                     case CraftTree.Type.Fabricator:
                         AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
-                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.Fabricator, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.CyclopsFabricator:
                         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
-                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.CyclopsFabricator, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.MapRoom:
                         AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
-                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.SeamothUpgrades:
                         AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
-                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.Workbench:
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
-                        AddLanguageForNode(craftTreeToYoink, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
                         break;
                     default:
                         AddIconForNode(craftTreeToYoink, craftTreeTab, schemeId);
@@ -201,6 +201,14 @@ public class AllInOneHandHeldFabricator
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
                 AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
             }
+        }
+    }
+    public static void AddLanguageForNode(TechType techType, CraftNode node, string newTreeScheme)
+    {
+        if (node.action == TreeAction.Expand)
+        {
+            var origTitle = LanguageUtils.CheckTechType(Language.main, techType);
+            LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}", origTitle);
         }
     }
 }
