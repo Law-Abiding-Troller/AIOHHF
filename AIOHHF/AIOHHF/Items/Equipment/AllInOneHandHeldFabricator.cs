@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BepInEx;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -14,6 +15,7 @@ namespace AIOHHF.Items.Equipment;
 
 public class AllInOneHandHeldFabricator
 {
+    public static Dictionary< CraftTree.Type, ICustomPrefab> CustomFabricators = new();
     public static PrefabInfo PrefabInfo;
     public static CustomPrefab Prefab;
     public static FabricatorGadget Fabricator;
@@ -34,12 +36,24 @@ public class AllInOneHandHeldFabricator
             const string schemeId = "AIOHHFCraftTree";
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
+                //skip stuff that either throws exceptions, is my own tree, or is an unused tree
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
                     treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType
                     || treeType == CraftTree.Type.Centrifuge) continue;
-                
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
+                if (CustomFabricators.TryGetValue(treeType, out var customPrefab))
+                {
+                    AddIconForNode(customPrefab.Info.TechType, craftTreeTab, schemeId);
+                    AddLanguageForNode(customPrefab.Info.TechType, craftTreeTab, schemeId);
+                    foreach (var craftNode in craftTreeToYoink.nodes)
+                    {
+                        AddIconForNode(craftTreeToYoink, craftNode, schemeId);
+                        craftTreeTab.AddNode(craftNode);
+                    }
+                    nodeRoot.AddNode(craftTreeTab);
+                    continue;
+                }
                 switch (treeType)
                 {
                     case CraftTree.Type.Fabricator:
@@ -62,9 +76,6 @@ public class AllInOneHandHeldFabricator
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
                         break;
-                    default:
-                        AddIconForNode(craftTreeToYoink, craftTreeTab, schemeId, false);
-                        break;
                 }
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
@@ -73,10 +84,10 @@ public class AllInOneHandHeldFabricator
                 }
                 nodeRoot.AddNode(craftTreeTab);
             }
-
             return new CraftTree(schemeId, nodeRoot);
         };
         Fabricator = Prefab.GetGadget<FabricatorGadget>();
+        
         var clone = new FabricatorTemplate(PrefabInfo, TreeType)
         {
             FabricatorModel = FabricatorTemplate.Model.Fabricator,
@@ -95,7 +106,8 @@ public class AllInOneHandHeldFabricator
                 };
                 prefab.AddComponent<HandHeldRelay>().dontConnectToRelays = true;
                 PrefabUtils.AddEnergyMixin<HandHeldBatterySource>(prefab, 
-                    "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23", 
+                    "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23" +
+                    "(i forgot that i made my upgradeslib hand held fabricator the same storage root class id :sob:)", 
                     TechType.Battery, compatbats);
 
             }
@@ -210,8 +222,13 @@ public class AllInOneHandHeldFabricator
     {
         if (node.action == TreeAction.Expand)
         {
-            var origTitle = LanguageUtils.CheckTechType(Language.main, techType);
-            LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}", origTitle);
+            var origTitle = Language._main.CheckTechType(techType);
+            if (!origTitle.IsNullOrWhiteSpace())
+                LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}", origTitle);
+            else
+            {
+                Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
+            }
         }
     }
 }
