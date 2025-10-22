@@ -201,6 +201,12 @@ public class AllInOneHandHeldFabricator
                 SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
                 if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
             }
+            else
+            {
+                var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
+                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
+                if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
+            }
             foreach (var nodes in node)
             {
                 addLanguage = input;
