@@ -251,7 +251,6 @@ public class AllInOneHandHeldFabricator
                 if (origID == null) {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");}
                 else {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{origID}");}
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
-                AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
             }
         }
     }
