@@ -189,7 +189,7 @@ public class AllInOneHandHeldFabricator
     {
         if (node.action == TreeAction.Expand)
         {
-            int nodecounter = 0;
+            int nodecounter = Random.Range(0, 999);
             int index =0;
             bool input = addLanguage;
             var originalID = node.id;
@@ -215,8 +215,6 @@ public class AllInOneHandHeldFabricator
                 {
                     index = _nodesSet.IndexOf(nodes);
                     if (_nodesSet[index].id.Equals(nodes.id)) nodes.id += $"{nodecounter++}";
-                    var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{origID}");
-                    SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{nodes.id}", icon);
                     if (addLanguage)
                     {
                         AddLanguageForNode(origTreeScheme, nodes, newTreeScheme, originalID);
