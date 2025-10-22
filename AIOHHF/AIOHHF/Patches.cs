@@ -5,21 +5,14 @@ using Nautilus.Assets.Gadgets;
 
 namespace AIOHHF;
 
-[HarmonyPatch(typeof(GadgetExtensions))]
+[HarmonyPatch(typeof(CustomPrefab))]
 public class Patches
 {
-    [HarmonyPatch(nameof(GadgetExtensions.CreateFabricator))]
+    [HarmonyPatch(nameof(CustomPrefab.Register))]
     [HarmonyPostfix]
-    public static void CreateFabricator(ICustomPrefab customPrefab)
+    public static void CreateFabricator(CustomPrefab __instance)
     {
-        if (!customPrefab.TryGetGadget<FabricatorGadget>(out var gadget))
-        {
-            customPrefab.CreateFabricator(out var treeType);
-            AllInOneHandHeldFabricator.CustomFabricators.Add(treeType, customPrefab);
-        }
-        else
-        {
-            AllInOneHandHeldFabricator.CustomFabricators.Add(gadget.CraftTreeType, customPrefab);
-        }
+        if (!__instance.TryGetGadget<FabricatorGadget>(out var gadget)) return;
+        AllInOneHandHeldFabricator.CustomFabricators.Add(gadget.CraftTreeType, __instance);
     }
 }

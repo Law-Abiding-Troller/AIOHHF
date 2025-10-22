@@ -21,6 +21,7 @@ public class AllInOneHandHeldFabricator
     public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
+    static List<CraftNode> _nodesSet = new List<CraftNode>();
 
     public static void Initialize()
     {
@@ -62,7 +63,7 @@ public class AllInOneHandHeldFabricator
                         break;
                     case CraftTree.Type.CyclopsFabricator:
                         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
-                        AddLanguageForNode(TechType.CyclopsFabricator, craftTreeTab, schemeId);
+                        AddLanguageForNode(TechType.Cyclops, craftTreeTab, schemeId);
                         break;
                     case CraftTree.Type.MapRoom:
                         AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
@@ -98,6 +99,8 @@ public class AllInOneHandHeldFabricator
                 PostScaleValue = model.transform.localScale;
                 prefab.AddComponent<Pickupable>();
                 prefab.AddComponent<HandHeldFabricator>();
+                prefab.AddComponent<Rigidbody>();
+                PrefabUtils.AddWorldForces(prefab, 5);
                 PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
                 List<TechType> compatbats = new List<TechType>()
                 {
@@ -186,15 +189,42 @@ public class AllInOneHandHeldFabricator
     {
         if (node.action == TreeAction.Expand)
         {
+            int nodecounter = 0;
+            int index =0;
+            bool input = addLanguage;
+            var originalID = node.id;
+            if (_nodesSet.Contains(node))
+            {
+                index = _nodesSet.IndexOf(node);
+                if (_nodesSet[index].id.Equals(node.id)) node.id += $"{nodecounter++}";
+                var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
+                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
+                if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
+            }
             foreach (var nodes in node)
             {
-                var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{node.id}");
-                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", origIcon);
+                addLanguage = input;
+                var origID = nodes.id;
+                if (_nodesSet.Contains(nodes))
+                {
+                    index = _nodesSet.IndexOf(nodes);
+                    if (_nodesSet[index].id.Equals(nodes.id)) nodes.id += $"{nodecounter++}";
+                    var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{origID}");
+                    SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{nodes.id}", icon);
+                    if (addLanguage)
+                    {
+                        AddLanguageForNode(origTreeScheme, nodes, newTreeScheme, originalID);
+                        addLanguage = false;
+                    }
+                }
+                var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{origID}");
+                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{nodes.id}", origIcon);
                 if (addLanguage)
                 {
-                    AddLanguageForNode(origTreeScheme, node, newTreeScheme);
+                    AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
                 }
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
+                if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
             }
         }
     }
@@ -203,32 +233,37 @@ public class AllInOneHandHeldFabricator
         if (node.action == TreeAction.Expand)
         {
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(treeType));
+            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
 
-    public static void AddLanguageForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme)
+    public static void AddLanguageForNode(CraftTree origTreeScheme,CraftNode node, string newTreeScheme, string origID = null)
     {
         if (node.action == TreeAction.Expand)
         {
             foreach (var nodes in node)
             {
-                var origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");
+                string origLanguage;
+                if (origID == null) {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");}
+                else {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{origID}");}
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
                 AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
             }
+            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
     public static void AddLanguageForNode(TechType techType, CraftNode node, string newTreeScheme)
     {
         if (node.action == TreeAction.Expand)
         {
-            var origTitle = Language._main.CheckTechType(techType);
+            var origTitle = Language._main.Get(techType);
             if (!origTitle.IsNullOrWhiteSpace())
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}", origTitle);
             else
             {
                 Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
             }
+            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
 }
