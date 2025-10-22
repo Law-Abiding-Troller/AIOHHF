@@ -196,7 +196,7 @@ public class AllInOneHandHeldFabricator
             if (_nodesSet.Contains(node))
             {
                 index = _nodesSet.IndexOf(node);
-                if (_nodesSet[index].id.Equals(node.id)) node.id += $"{nodecounter++}";
+                if (_nodesSet[index].id.Equals(node.id)) node.id = $"{origTreeScheme.id}_{node.id}";
                 var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
                 SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
                 if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
@@ -209,24 +209,7 @@ public class AllInOneHandHeldFabricator
             }
             foreach (var nodes in node)
             {
-                addLanguage = input;
-                var origID = nodes.id;
-                if (_nodesSet.Contains(nodes))
-                {
-                    index = _nodesSet.IndexOf(nodes);
-                    if (_nodesSet[index].id.Equals(nodes.id)) nodes.id += $"{nodecounter++}";
-                    if (addLanguage)
-                    {
-                        AddLanguageForNode(origTreeScheme, nodes, newTreeScheme, originalID);
-                        addLanguage = false;
-                    }
-                }
-                var origIcon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{origID}");
-                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{nodes.id}", origIcon);
-                if (addLanguage)
-                {
-                    AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
-                }
+                if (addLanguage) { AddLanguageForNode(origTreeScheme, nodes, newTreeScheme); }
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
             if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
