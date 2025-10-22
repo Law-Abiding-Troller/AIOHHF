@@ -189,7 +189,6 @@ public class AllInOneHandHeldFabricator
     {
         if (node.action == TreeAction.Expand)
         {
-            int nodecounter = Random.Range(0, 999);
             int index =0;
             bool input = addLanguage;
             var originalID = node.id;
