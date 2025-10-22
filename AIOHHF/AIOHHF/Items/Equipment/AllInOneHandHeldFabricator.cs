@@ -21,7 +21,6 @@ public class AllInOneHandHeldFabricator
     public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
-    static List<CraftNode> _nodesSet = new List<CraftNode>();
 
     public static void Initialize()
     {
@@ -189,28 +188,16 @@ public class AllInOneHandHeldFabricator
     {
         if (node.action == TreeAction.Expand)
         {
-            int index =0;
             var originalID = node.id;
-            if (_nodesSet.Contains(node))
-            {
-                index = _nodesSet.IndexOf(node);
-                if (_nodesSet[index].id.Equals(node.id)) node.id = $"{origTreeScheme.id}_{node.id}";
-                var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
-                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
-                if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
-            }
-            else
-            {
-                var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
-                SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
-                if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
-            }
+            node.id = $"{origTreeScheme.id}_{originalID}";
+            Plugin.Logger.LogDebug(node.id);
+            var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
+            SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
+            if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
             foreach (var nodes in node)
             {
-                if (addLanguage) { AddLanguageForNode(origTreeScheme, nodes, newTreeScheme); }
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
             }
-            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
     public static void AddIconForNode(TechType treeType, CraftNode node, string schemeId)
@@ -218,7 +205,6 @@ public class AllInOneHandHeldFabricator
         if (node.action == TreeAction.Expand)
         {
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{node.id}", SpriteManager.Get(treeType));
-            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
 
