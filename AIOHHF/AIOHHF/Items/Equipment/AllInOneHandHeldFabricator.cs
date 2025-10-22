@@ -230,8 +230,8 @@ public class AllInOneHandHeldFabricator
                     AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
                 }
                 AddIconForNode(origTreeScheme, nodes, newTreeScheme);
-                if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
             }
+            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
     public static void AddIconForNode(TechType treeType, CraftNode node, string schemeId)
@@ -255,7 +255,6 @@ public class AllInOneHandHeldFabricator
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
                 AddLanguageForNode(origTreeScheme, nodes, newTreeScheme);
             }
-            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
     public static void AddLanguageForNode(TechType techType, CraftNode node, string newTreeScheme)
@@ -269,7 +268,6 @@ public class AllInOneHandHeldFabricator
             {
                 Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
             }
-            if (!_nodesSet.Contains(node)) _nodesSet.Add(node);
         }
     }
 }
