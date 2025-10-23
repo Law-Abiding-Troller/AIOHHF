@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using AIOHHF.Items.Upgrades;
 using BepInEx;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
+using Nautilus.Extensions;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
@@ -16,13 +19,16 @@ namespace AIOHHF.Items.Equipment;
 public class AllInOneHandHeldFabricator
 {
     public static Dictionary< CraftTree.Type, ICustomPrefab> CustomFabricators = new();
+    private static Dictionary<CraftNode, CraftTree.Type> _fabricators = new();
     public static PrefabInfo PrefabInfo;
     public static CustomPrefab Prefab;
     public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
-
-    public static void Initialize()
+    public static List<CraftNode> Trees = new List<CraftNode>();
+    public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
+    public static List<ICustomPrefab> RecipePrefabs = new();
+    public static void Initialize(Plugin plugin)
     {
         PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
                         "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held(tm)!" +
@@ -34,6 +40,7 @@ public class AllInOneHandHeldFabricator
         {
             var nodeRoot = new CraftNode("Root");
             const string schemeId = "AIOHHFCraftTree";
+            RecipeData data = new RecipeData();
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 //skip stuff that either throws exceptions, is my own tree, or is an unused tree
@@ -51,7 +58,25 @@ public class AllInOneHandHeldFabricator
                         AddIconForNode(craftTreeToYoink, craftNode, schemeId);
                         craftTreeTab.AddNode(craftNode);
                     }
-                    nodeRoot.AddNode(craftTreeTab);
+                    if (customPrefab.Info.ClassID.Equals("ProtoPrecursorFabricator"))
+                    {
+                        data = new RecipeData(
+                            new Ingredient(RecipePrefabs.GetForClassID("AlienBuildingBlock").Info.TechType, 1),
+                            new Ingredient(RecipePrefabs.GetForClassID("IonPrism").Info.TechType, 1),
+                            new Ingredient(RecipePrefabs.GetForClassID("Proto_PrecursorIngot").Info.TechType, 1),
+                            new Ingredient(TechType.PrecursorIonCrystalMatrix, 1));
+                        Upgrades.Add(new UpgradesPrefabs($"{craftTreeTab.id}",
+                            $"{craftTreeTab.id} Tree Upgrade", 
+                            $"{craftTreeTab.id} Tree Upgrade for the All-In-One Hand Held Fabricator." +
+                            $" Gives the fabricator the related craftig tree.", craftTreeTab, data));
+                        continue;
+                    }
+                    data = CraftDataHandler.GetModdedRecipeData(customPrefab.Info.TechType);
+                    Upgrades.Add(new UpgradesPrefabs($"{craftTreeTab.id}",
+                        $"{craftTreeTab.id} Tree Upgrade", 
+                        $"{craftTreeTab.id} Tree Upgrade for the All-In-One Hand Held Fabricator." +
+                        $" Gives the fabricator the related craftig tree.", craftTreeTab, data));
+                    if (plugin.ConfigOptions.DebugMode) nodeRoot.AddNode(craftTreeTab);
                     continue;
                 }
                 switch (treeType)
@@ -59,22 +84,28 @@ public class AllInOneHandHeldFabricator
                     case CraftTree.Type.Fabricator:
                         AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Fabricator, craftTreeTab, schemeId);
+                        data = CraftDataHandler.GetRecipeData(TechType.Fabricator);
                         break;
                     case CraftTree.Type.CyclopsFabricator:
                         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Cyclops, craftTreeTab, schemeId);
+                        data = CraftDataHandler.GetRecipeData(TechType.Fabricator);
                         break;
                     case CraftTree.Type.MapRoom:
                         AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
+                        data = CraftDataHandler.GetRecipeData(TechType.BaseMapRoom);
+                        data.Ingredients.Remove(new Ingredient(TechType.Titanium, 5));
                         break;
                     case CraftTree.Type.SeamothUpgrades:
                         AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
+                        data = CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole);
                         break;
                     case CraftTree.Type.Workbench:
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
+                        data = CraftDataHandler.GetRecipeData(TechType.Workbench);
                         break;
                 }
                 foreach (var craftNode in craftTreeToYoink.nodes)
@@ -82,7 +113,9 @@ public class AllInOneHandHeldFabricator
                     AddIconForNode(craftTreeToYoink, craftNode, schemeId);
                     craftTreeTab.AddNode(craftNode);
                 }
-                nodeRoot.AddNode(craftTreeTab);
+                _fabricators.Add(craftTreeTab, treeType);
+                Trees.Add(craftTreeTab);
+                if (plugin.ConfigOptions.DebugMode) nodeRoot.AddNode(craftTreeTab);
             }
             return new CraftTree(schemeId, nodeRoot);
         };
@@ -134,7 +167,6 @@ public class AllInOneHandHeldFabricator
     }
     public static void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     {
-        
         /*Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
@@ -190,7 +222,6 @@ public class AllInOneHandHeldFabricator
         {
             var originalID = node.id;
             node.id = $"{origTreeScheme.id}_{originalID}";
-            Plugin.Logger.LogDebug(node.id);
             var icon = SpriteManager.Get(SpriteManager.Group.Category, $"{origTreeScheme.id}_{originalID}");
             SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{newTreeScheme}_{node.id}", icon);
             if (addLanguage) AddLanguageForNode(origTreeScheme, node, newTreeScheme, originalID);
@@ -233,6 +264,18 @@ public class AllInOneHandHeldFabricator
                 Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
             }
         }
+    }
+}
+
+public static class CustomExtentions
+{
+    public static ICustomPrefab GetForClassID(this List<ICustomPrefab> prefabs, string classId)
+    {
+        foreach (var prefab in prefabs)
+        {
+            if (prefab.Info.ClassID.Equals(classId)) return prefab;
+        }
+        return null;
     }
 }
 

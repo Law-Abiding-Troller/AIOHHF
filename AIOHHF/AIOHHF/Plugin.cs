@@ -19,6 +19,8 @@ public class Plugin : BaseUnityPlugin
 
     private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
+    public Config ConfigOptions;
+
     private void Awake()
     {
         // set project-scoped logger instance
@@ -29,7 +31,8 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         WaitScreenHandler.RegisterLateLoadTask(PluginInfo.PLUGIN_NAME, AllInOneHandHeldFabricator.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
         SaveUtils.RegisterOnQuitEvent(DeregisterPrefabs);
-        AllInOneHandHeldFabricator.Initialize();
+        ConfigOptions = OptionsPanelHandler.RegisterModOptions<Config>();
+        AllInOneHandHeldFabricator.Initialize(this);
     }
 
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)

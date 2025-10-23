@@ -14,5 +14,9 @@ public class Patches
     {
         if (!__instance.TryGetGadget<FabricatorGadget>(out var gadget)) return;
         AllInOneHandHeldFabricator.CustomFabricators.Add(gadget.CraftTreeType, __instance);
+        if (__instance.Info.ClassID.Equals("AlienBuildingBlock") 
+            || __instance.Info.ClassID.Equals("IonPrism") 
+            || __instance.Info.ClassID.Equals("Proto_PrecursorIngot")) 
+            AllInOneHandHeldFabricator.RecipePrefabs.Add(__instance);
     }
 }
