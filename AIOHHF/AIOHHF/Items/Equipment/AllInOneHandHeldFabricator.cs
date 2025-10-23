@@ -20,6 +20,7 @@ public class AllInOneHandHeldFabricator
 {
     public static Dictionary< CraftTree.Type, ICustomPrefab> CustomFabricators = new();
     private static Dictionary<CraftNode, CraftTree.Type> _fabricators = new();
+    private static Dictionary<CraftTree.Type, bool> _prefabRegisters = new();
     public static PrefabInfo PrefabInfo;
     public static CustomPrefab Prefab;
     public static FabricatorGadget Fabricator;
@@ -47,6 +48,8 @@ public class AllInOneHandHeldFabricator
                 if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
                     treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType
                     || treeType == CraftTree.Type.Centrifuge) continue;
+                
+                if (!_prefabRegisters.ContainsKey(treeType)) _prefabRegisters.Add(treeType, false);
                 var craftTreeToYoink = CraftTree.GetTree(treeType);
                 var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
                 if (CustomFabricators.TryGetValue(treeType, out var customPrefab))
@@ -65,48 +68,71 @@ public class AllInOneHandHeldFabricator
                             new Ingredient(RecipePrefabs.GetForClassID("IonPrism").Info.TechType, 1),
                             new Ingredient(RecipePrefabs.GetForClassID("Proto_PrecursorIngot").Info.TechType, 1),
                             new Ingredient(TechType.PrecursorIonCrystalMatrix, 1));
-                        Upgrades.Add(new UpgradesPrefabs($"{craftTreeTab.id}",
+                        
+                        if (!_prefabRegisters[treeType])
+                        {Upgrades.Add(new UpgradesPrefabs($"{craftTreeTab.id}Upgrade",
                             $"{craftTreeTab.id} Tree Upgrade", 
                             $"{craftTreeTab.id} Tree Upgrade for the All-In-One Hand Held Fabricator." +
                             $" Gives the fabricator the related craftig tree.", craftTreeTab, data));
+                            _prefabRegisters[treeType] = true;
+                        }
                         continue;
                     }
                     data = CraftDataHandler.GetModdedRecipeData(customPrefab.Info.TechType);
-                    Upgrades.Add(new UpgradesPrefabs($"{craftTreeTab.id}",
-                        $"{craftTreeTab.id} Tree Upgrade", 
-                        $"{craftTreeTab.id} Tree Upgrade for the All-In-One Hand Held Fabricator." +
-                        $" Gives the fabricator the related craftig tree.", craftTreeTab, data));
+                    var language1 = Language.main.Get(customPrefab.Info.TechType);
+                    if (!_prefabRegisters[treeType])
+                    {Upgrades.Add(new UpgradesPrefabs($"{language1}Upgrade",
+                        $"{language1} Tree Upgrade", 
+                        $"{language1} Tree Upgrade for the All-In-One Hand Held Fabricator." +
+                        $" Gives the fabricator the related craftig tree.", craftTreeTab, data,customPrefab.Info.TechType));
+                        _prefabRegisters[treeType] = true;
+                    }
                     if (plugin.ConfigOptions.DebugMode) nodeRoot.AddNode(craftTreeTab);
                     continue;
                 }
+
+                TechType tech = TechType.None;
                 switch (treeType)
                 {
                     case CraftTree.Type.Fabricator:
                         AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Fabricator, craftTreeTab, schemeId);
                         data = CraftDataHandler.GetRecipeData(TechType.Fabricator);
+                        tech = TechType.Fabricator;
                         break;
                     case CraftTree.Type.CyclopsFabricator:
                         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Cyclops, craftTreeTab, schemeId);
                         data = CraftDataHandler.GetRecipeData(TechType.Fabricator);
+                        tech = TechType.Cyclops;
                         break;
                     case CraftTree.Type.MapRoom:
                         AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
                         data = CraftDataHandler.GetRecipeData(TechType.BaseMapRoom);
                         data.Ingredients.Remove(new Ingredient(TechType.Titanium, 5));
+                        tech = TechType.BaseMapRoom;
                         break;
                     case CraftTree.Type.SeamothUpgrades:
                         AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
                         data = CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole);
+                        tech = TechType.BaseUpgradeConsole;
                         break;
                     case CraftTree.Type.Workbench:
                         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
                         AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
                         data = CraftDataHandler.GetRecipeData(TechType.Workbench);
+                        tech = TechType.Workbench;
                         break;
+                }
+                var language = Language.main.Get(tech);
+                if (!_prefabRegisters[treeType])
+                {Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
+                    $"{language} Tree Upgrade", 
+                    $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." +
+                    $" Gives the fabricator the related craftig tree.", craftTreeTab, data, tech));
+                    _prefabRegisters[treeType] = true;
                 }
                 foreach (var craftNode in craftTreeToYoink.nodes)
                 {
