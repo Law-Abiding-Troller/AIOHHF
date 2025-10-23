@@ -32,7 +32,7 @@ public class UpgradesPrefabs
     }
     public UpgradesPrefabs(string classId, string name, string desc, CraftNode tree, RecipeData data, string lang = "English", bool unlAtStart = false)
     {
-        PrefabInfo = Nautilus.Assets.PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart);
+        PrefabInfo = PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart).WithIcon(SpriteManager.Get(TechType.Fabricator));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         var clone = new CloneTemplate(PrefabInfo, TechType.VehiclePowerUpgradeModule);
