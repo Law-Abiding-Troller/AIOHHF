@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Management.Instrumentation;
 using System.Net;
 using AIOHHF.Items.Upgrades;
 using BepInEx;
@@ -170,10 +171,13 @@ public class AllInOneHandHeldFabricator
                     }
                     if (customPrefab.Info.ClassID.Equals("ProtoPrecursorFabricator"))
                     {
+                        if (!RecipePrefabs.TryGetForClassID("AlienBuildingBlock", out var buildingBlock) ) continue;
+                        if (!RecipePrefabs.TryGetForClassID("IonPrism", out var ionPrism)) continue;
+                        if (!RecipePrefabs.TryGetForClassID("Proto_PrecursorIngot", out var precursorIngot)) continue;
                         data = new RecipeData(
-                            new Ingredient(RecipePrefabs.GetForClassID("AlienBuildingBlock").Info.TechType, 1),
-                            new Ingredient(RecipePrefabs.GetForClassID("IonPrism").Info.TechType, 1),
-                            new Ingredient(RecipePrefabs.GetForClassID("Proto_PrecursorIngot").Info.TechType, 1),
+                            new Ingredient(buildingBlock.Info.TechType, 1),
+                            new Ingredient(ionPrism.Info.TechType, 1),
+                            new Ingredient(precursorIngot.Info.TechType, 1),
                             new Ingredient(TechType.PrecursorIonCrystalMatrix, 1));
                         
                         if (!_prefabRegisters[treeType])
@@ -315,13 +319,15 @@ public class AllInOneHandHeldFabricator
 
 public static class CustomExtentions
 {
-    public static ICustomPrefab GetForClassID(this List<ICustomPrefab> prefabs, string classId)
+    public static bool TryGetForClassID(this List<ICustomPrefab> prefabs, string classId, out ICustomPrefab prefab)
     {
-        foreach (var prefab in prefabs)
+        prefab = null;
+        foreach (var possiblePrefab in prefabs)
         {
-            if (prefab.Info.ClassID.Equals(classId)) return prefab;
+            if (possiblePrefab.Info.ClassID.Equals(classId)) prefab = possiblePrefab;
+            return true;
         }
-        return null;
+        return false;
     }
 }
 
