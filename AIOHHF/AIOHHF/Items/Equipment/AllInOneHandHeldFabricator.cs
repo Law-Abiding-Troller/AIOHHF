@@ -13,6 +13,7 @@ using Nautilus.Extensions;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
+using UWE;
 using Random = UnityEngine.Random;
 
 namespace AIOHHF.Items.Equipment;
@@ -187,15 +188,14 @@ public class AllInOneHandHeldFabricator
                     if (techType.ToString().Equals("ProtoPrecursorFabricator"))
                     {
                         Plugin.Logger.LogDebug("Prototype fabricator Found!");
-                        if (!RecipePrefabs.TryGetForClassID("AlienBuildingBlock", out var buildingBlock)) continue;
-                        if (!RecipePrefabs.TryGetForClassID("IonPrism", out var ionPrism)) continue;
-                        if (!RecipePrefabs.TryGetForClassID("Proto_PrecursorIngot", out var precursorIngot)) continue;
+                        if (!TechTypeExtensions.FromString("AlienBuildingBlock", out var buildingBlock, false)) continue;
+                        if (!TechTypeExtensions.FromString("IonPrism", out var ionPrism, false)) continue;
+                        if (!TechTypeExtensions.FromString("Proto_PrecursorIngot", out var precursorIngot,false)) continue;
                         Plugin.Logger.LogDebug("Prototype recipe found!");
-                        if (buildingBlock == null || ionPrism == null || precursorIngot == null) continue;
                         data = new RecipeData(
-                            new Ingredient(buildingBlock.Info.TechType, 1),
-                            new Ingredient(ionPrism.Info.TechType, 1),
-                            new Ingredient(precursorIngot.Info.TechType, 1),
+                            new Ingredient(buildingBlock, 1),
+                            new Ingredient(ionPrism, 1),
+                            new Ingredient(precursorIngot, 1),
                             new Ingredient(TechType.PrecursorIonCrystalMatrix, 1));
                         
                         if (!_prefabRegisters[treeType])
@@ -221,6 +221,7 @@ public class AllInOneHandHeldFabricator
                     continue;
                 }
                 TechType tech = TechType.None;
+                Plugin.Logger.LogDebug(treeType.ToString());
                 switch (treeType)
                 {
                     case CraftTree.Type.Fabricator:
