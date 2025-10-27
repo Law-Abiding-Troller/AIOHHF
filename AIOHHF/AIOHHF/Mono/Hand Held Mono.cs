@@ -23,9 +23,9 @@ public class HandHeldFabricator : PlayerTool
     }
     public override bool OnRightHandDown()
     {
-        Plugin.Logger.LogDebug($"OnRightHandDown: {relay.inboundPowerSources.Count},{relay.GetPower()}, {battery.connectedRelay}, {battery.enabled}, {battery.charge}");
         fab.opened = true;
         uGUI.main.craftingMenu.Open(AllInOneHandHeldFabricator.Fabricator.CraftTreeType, fab);
+        AllInOneHandHeldFabricator.StorageContainer = storageContainer;
         return true;
     }
 

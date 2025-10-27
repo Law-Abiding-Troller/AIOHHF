@@ -29,7 +29,7 @@ public class AllInOneHandHeldFabricator
     public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
-    private static StorageContainer _storageContainer;
+    public static StorageContainer StorageContainer;
     public static List<CraftNode> Trees = new List<CraftNode>();
     public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
     public static void Initialize()
@@ -44,11 +44,7 @@ public class AllInOneHandHeldFabricator
         {
             var nodeRoot = new CraftNode("Root");
             const string schemeId = "AIOHHFCraftTree";
-            if (_storageContainer == null || _storageContainer.container == null
-                                || _storageContainer.container._items == null
-                                || _storageContainer.container._items.Keys == null) 
-                                return new CraftTree("NRE", new CraftNode("NRE"));
-            foreach (var fabricator in _storageContainer.container._items.Keys)
+            foreach (var fabricator in StorageContainer.container._items.Keys)
             {
                 CraftNode craftTreeTab = new CraftNode("NRE");
                 if (fabricator == TechType.None) continue;
@@ -78,7 +74,7 @@ public class AllInOneHandHeldFabricator
                 prefab.AddComponent<HandHeldFabricator>();
                 prefab.AddComponent<Rigidbody>();
                 PrefabUtils.AddWorldForces(prefab, 5);
-                PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
+                StorageContainer = PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
                 List<TechType> compatbats = new List<TechType>()
                 {
                     TechType.Battery,
