@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AIOHHF.Items.Equipment;
 using UnityEngine;
 
@@ -32,12 +33,7 @@ public class HandHeldFabricator : PlayerTool
     {
         if (!storageContainer.open && storageContainer != null && storageContainer.container != null)
         {
-            var allowedtech = new[]
-            {
-                TechType.PowerCell
-            };
             storageContainer.container._label =  "ALL IN ONE HAND HELD FABRICATOR";
-            storageContainer.container.SetAllowedTechTypes(allowedtech);
             storageContainer.Open();
         }
 
@@ -55,6 +51,7 @@ public class HandHeldFabricator : PlayerTool
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, fab.state);
     }
+    
 }
 
 public class HandHeldRelay : PowerRelay

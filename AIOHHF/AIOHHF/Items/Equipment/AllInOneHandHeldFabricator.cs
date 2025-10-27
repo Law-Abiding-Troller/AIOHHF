@@ -24,11 +24,12 @@ public class AllInOneHandHeldFabricator
     public static Dictionary<CraftTree.Type, TechType> CustomFabricators = new();
     public static Dictionary<CraftNode, CraftTree.Type> Fabricators = new();
     public static Dictionary<CraftTree.Type, bool> PrefabRegisters = new();
-    public static PrefabInfo PrefabInfo;
-    public static CustomPrefab Prefab;
+    private static PrefabInfo PrefabInfo;
+    private static CustomPrefab Prefab;
     public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
+    private static StorageContainer _storageContainer;
     public static List<CraftNode> Trees = new List<CraftNode>();
     public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
     public static void Initialize()
@@ -43,55 +44,20 @@ public class AllInOneHandHeldFabricator
         {
             var nodeRoot = new CraftNode("Root");
             const string schemeId = "AIOHHFCraftTree";
-            foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
+            if (_storageContainer == null || _storageContainer.container == null
+                                || _storageContainer.container._items == null
+                                || _storageContainer.container._items.Keys == null) 
+                                return new CraftTree("NRE", new CraftNode("NRE"));
+            foreach (var fabricator in _storageContainer.container._items.Keys)
             {
-                //skip stuff that either throws exceptions, is my own tree, or is an unused tree
-                if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
-                    treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == TreeType
-                    || treeType == CraftTree.Type.Centrifuge) continue;
-                
-                if (!PrefabRegisters.ContainsKey(treeType)) PrefabRegisters.Add(treeType, false);
-                var craftTreeToYoink = CraftTree.GetTree(treeType);
-                var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
-                if (CustomFabricators.TryGetValue(treeType, out var customPrefab))
+                CraftNode craftTreeTab = new CraftNode("NRE");
+                if (fabricator == TechType.None) continue;
+                foreach (var treeType in Upgrades)
                 {
-                    CraftTreeMethods.AddIconForNode(customPrefab, craftTreeTab, schemeId);
-                    CraftTreeMethods.AddLanguageForNode(customPrefab, craftTreeTab, schemeId);
-                    foreach (var craftNode in craftTreeToYoink.nodes)
+                    if (fabricator == treeType.PrefabInfo.TechType)
                     {
-                        CraftTreeMethods.AddIconForNode(craftTreeToYoink, craftNode, schemeId);
-                        craftTreeTab.AddNode(craftNode);
+                        craftTreeTab = treeType.Tree;
                     }
-                    nodeRoot.AddNode(craftTreeTab);
-                    continue;
-                }
-                switch (treeType)
-                {
-                    case CraftTree.Type.Fabricator:
-                        CraftTreeMethods.AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId);
-                        CraftTreeMethods.AddLanguageForNode(TechType.Fabricator, craftTreeTab, schemeId);
-                        break;
-                    case CraftTree.Type.CyclopsFabricator:
-                        CraftTreeMethods.AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId);
-                        CraftTreeMethods.AddLanguageForNode(TechType.Cyclops, craftTreeTab, schemeId);
-                        break;
-                    case CraftTree.Type.MapRoom:
-                        CraftTreeMethods.AddIconForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
-                        CraftTreeMethods.AddLanguageForNode(TechType.BaseMapRoom, craftTreeTab, schemeId);
-                        break;
-                    case CraftTree.Type.SeamothUpgrades:
-                        CraftTreeMethods.AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
-                        CraftTreeMethods.AddLanguageForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
-                        break;
-                    case CraftTree.Type.Workbench:
-                        CraftTreeMethods.AddIconForNode(TechType.Workbench, craftTreeTab, schemeId);
-                        CraftTreeMethods.AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
-                        break;
-                }
-                foreach (var craftNode in craftTreeToYoink.nodes)
-                {
-                    CraftTreeMethods.AddIconForNode(craftTreeToYoink, craftNode, schemeId);
-                    craftTreeTab.AddNode(craftNode);
                 }
                 nodeRoot.AddNode(craftTreeTab);
             }
@@ -157,22 +123,29 @@ public class AllInOneHandHeldFabricator
                     treeType == CraftTree.Type.Rocket || treeType == TreeType
                     || treeType == CraftTree.Type.Centrifuge) continue;
 
+                //if its not defined, add it
                 if (!PrefabRegisters.ContainsKey(treeType)) PrefabRegisters.Add(treeType, false);
+                //techtype to set with a scope outside of each if statement
                 TechType techType;
+                //get the techtypes for outliers because there is no techtype of "MapRoom" or "SeamothUpgrades"
                 if (treeType == CraftTree.Type.MapRoom) techType = TechType.BaseMapRoom;
                 if (treeType == CraftTree.Type.SeamothUpgrades) techType = TechType.BaseUpgradeConsole;
+                //get the craft tree's techtype
                 if (!TechTypeExtensions.FromString(treeType.ToString(), out techType, false)
                     && treeType != CraftTree.Type.MapRoom && treeType != CraftTree.Type.SeamothUpgrades) continue;
+                //is it a custom craft tree?
                 if (EnumHandler.ModdedEnumExists<CraftTree.Type>(treeType.ToString()))
+                    //add it if so
                     CustomFabricators.Add(treeType, techType);
+                //do nothing with the vanilla ones since they are mapped manually
             }
 
             nodeRoot.AddNode(CraftTreeMethods.RegisterFabricatorUpgrade());
             nodeRoot.AddNode(CraftTreeMethods.RegisterWorkbenchUpgrade());
             nodeRoot.AddNode(CraftTreeMethods.RegisterCyclopsFabricatorUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterPrecursorFabricatorUpgrade());
             nodeRoot.AddNode(CraftTreeMethods.RegisterScannerRoomUpgrade());
             nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
+            nodeRoot.AddNode(CraftTreeMethods.RegisterPrecursorFabricatorUpgrade());
             foreach (CraftNode node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
             {
                 node.AddNode(node);
