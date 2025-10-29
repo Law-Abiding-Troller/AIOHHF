@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Management.Instrumentation;
 using System.Net;
+using System.Reflection;
 using AIOHHF.Items.Upgrades;
 using BepInEx;
 using Nautilus.Assets;
@@ -60,6 +61,13 @@ public class AllInOneHandHeldFabricator
             FabricatorModel = FabricatorTemplate.Model.Fabricator,
             ModifyPrefab = prefab =>
             { 
+                var fab = prefab.GetComponent<Fabricator>();
+                if (fab != null)
+                {
+                    var hhf = prefab.AddAndCopyComponent<HandHeldFabricator, Fabricator>();
+                    Object.Destroy(fab);
+                }
+                prefab.AddComponent<HandHeldFabricator>();
                 GameObject model = prefab.gameObject; 
                 model.transform.localScale = Vector3.one / 2f;
                 PostScaleValue = model.transform.localScale;
@@ -78,9 +86,6 @@ public class AllInOneHandHeldFabricator
                     "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23" +
                     "(i forgot that i made my upgradeslib hand held fabricator the same storage root class id :sob:)", 
                     TechType.Battery, compatbats);
-                var fab = prefab.GetComponent<Fabricator>();
-                if (fab != null) Object.Destroy(fab);
-                prefab.AddComponent<HandHeldFabricator>();
             }
         };
         Prefab.SetGameObject(clone);
@@ -118,12 +123,12 @@ public class AllInOneHandHeldFabricator
                 if (!PrefabRegisters.ContainsKey(treeType)) PrefabRegisters.Add(treeType, false);
                 //techtype to set with a scope outside of each if statement
                 TechType techType;
-                //get the techtypes for outliers because there is no techtype of "MapRoom" or "SeamothUpgrades"
-                if (treeType == CraftTree.Type.MapRoom) techType = TechType.BaseMapRoom;
-                if (treeType == CraftTree.Type.SeamothUpgrades) techType = TechType.BaseUpgradeConsole;
                 //get the craft tree's techtype
                 if (!TechTypeExtensions.FromString(treeType.ToString(), out techType, false)
                     && treeType != CraftTree.Type.MapRoom && treeType != CraftTree.Type.SeamothUpgrades) continue;
+                //get the techtypes for outliers because there is no techtype of "MapRoom" or "SeamothUpgrades"
+                if (treeType == CraftTree.Type.MapRoom) techType = TechType.BaseMapRoom;
+                if (treeType == CraftTree.Type.SeamothUpgrades) techType = TechType.BaseUpgradeConsole;
                 //is it a custom craft tree?
                 if (EnumHandler.ModdedEnumExists<CraftTree.Type>(treeType.ToString()))
                     //add it if so
