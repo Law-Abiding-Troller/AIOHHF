@@ -6,7 +6,7 @@ namespace AIOHHF.Mono;
 public class HandHeldFabricator : Fabricator
 {
     
-    public override void OnOpenedChanged(bool opened)
+    /*public override void OnOpenedChanged(bool opened)
     {
         AllInOneHandHeldFabricator.ActiveNodes = new List<CraftNode>();
         foreach (TechType item in gameObject.GetComponent<StorageContainer>().container._items.Keys)
@@ -23,5 +23,5 @@ public class HandHeldFabricator : Fabricator
             AllInOneHandHeldFabricator.ActiveNodes.Add(node);
         }
         base.OnOpenedChanged(opened);
-    }
+    }*/
 }

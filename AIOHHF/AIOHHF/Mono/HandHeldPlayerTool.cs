@@ -46,7 +46,6 @@ public class HandHeldPlayerTool : PlayerTool
         base.OnDraw(p);
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        AllInOneHandHeldFabricator.StorageContainer = storageContainer;
     }
     
 }

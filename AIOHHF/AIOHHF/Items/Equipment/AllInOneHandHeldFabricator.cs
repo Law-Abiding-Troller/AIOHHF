@@ -28,11 +28,10 @@ public class AllInOneHandHeldFabricator
     public static Dictionary<CraftTree.Type, bool> PrefabRegisters = new();
     private static PrefabInfo PrefabInfo;
     private static CustomPrefab Prefab;
-    public static FabricatorGadget Fabricator;
+    //public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
-    public static StorageContainer StorageContainer;
-    public static List<CraftNode> ActiveNodes = new();
+    private static CraftNode _nodeRoot;
     public static List<CraftNode> Trees = new List<CraftNode>();
     public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
     public static void Initialize()
@@ -45,16 +44,11 @@ public class AllInOneHandHeldFabricator
         Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
-            var nodeRoot = new CraftNode("Root");
             const string schemeId = "AIOHHFCraftTree";
-            foreach (var fabricator in ActiveNodes)
-            {
-                nodeRoot.AddNode(fabricator);
-            }
-            return new CraftTree(schemeId, nodeRoot);
+            return new CraftTree(schemeId, _nodeRoot);
         };
         PrefabRegisters[TreeType] = true;
-        Fabricator = Prefab.GetGadget<FabricatorGadget>();
+        //Fabricator = Prefab.GetGadget<FabricatorGadget>();
         
         var clone = new FabricatorTemplate(PrefabInfo, TreeType)
         {
@@ -67,7 +61,6 @@ public class AllInOneHandHeldFabricator
                     var hhf = prefab.AddAndCopyComponent<HandHeldFabricator, Fabricator>();
                     Object.Destroy(fab);
                 }
-                prefab.AddComponent<HandHeldFabricator>();
                 GameObject model = prefab.gameObject; 
                 model.transform.localScale = Vector3.one / 2f;
                 PostScaleValue = model.transform.localScale;
@@ -75,7 +68,7 @@ public class AllInOneHandHeldFabricator
                 prefab.AddComponent<HandHeldPlayerTool>();
                 prefab.AddComponent<Rigidbody>();
                 PrefabUtils.AddWorldForces(prefab, 5);
-                StorageContainer = PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
+                PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
                 List<TechType> compatbats = new List<TechType>()
                 {
                     TechType.Battery,
@@ -108,9 +101,8 @@ public class AllInOneHandHeldFabricator
     }
 
     public static IEnumerator RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
-    {
-        var nodeRoot = new CraftNode("Root");
-            const string schemeId = "AIOHHFCraftTree";
+    { 
+        _nodeRoot = new CraftNode("Root");
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 //skip stuff that either throws exceptions, is my own tree, or is an unused tree
@@ -136,16 +128,17 @@ public class AllInOneHandHeldFabricator
                 //do nothing with the vanilla ones since they are mapped manually
             }
 
-            nodeRoot.AddNode(CraftTreeMethods.RegisterFabricatorUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterWorkbenchUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterCyclopsFabricatorUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterScannerRoomUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
-            nodeRoot.AddNode(CraftTreeMethods.RegisterPrecursorFabricatorUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterFabricatorUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterWorkbenchUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterCyclopsFabricatorUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterScannerRoomUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterPrecursorFabricatorUpgrade());
             foreach (CraftNode node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
             {
-                node.AddNode(node);
+                _nodeRoot.AddNode(node);
             }
+            
             if (!PrefabRegisters.ContainsKey(TreeType)) PrefabRegisters.Add(TreeType, false);
             if (!PrefabRegisters[TreeType]) Initialize();
         yield return null;
