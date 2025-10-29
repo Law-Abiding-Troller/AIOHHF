@@ -1,19 +1,17 @@
-using System.Collections.Generic;
 using AIOHHF.Items.Equipment;
-using UnityEngine;
 
 
 namespace AIOHHF.Mono;
 
-public class HandHeldFabricator : PlayerTool
+public class HandHeldPlayerTool : PlayerTool
 {
-    public Fabricator fab;
+    public HandHeldFabricator fab;
     public PowerRelay relay;
     public HandHeldBatterySource battery;
     public StorageContainer storageContainer;
     public override void Awake()
     {
-        fab = gameObject.GetComponent<Fabricator>();
+        fab = gameObject.GetComponent<HandHeldFabricator>();
         relay = gameObject.GetComponent<PowerRelay>();
         fab.powerRelay = relay;
         battery = gameObject.GetComponent<HandHeldBatterySource>();
@@ -25,7 +23,6 @@ public class HandHeldFabricator : PlayerTool
     {
         fab.opened = true;
         uGUI.main.craftingMenu.Open(AllInOneHandHeldFabricator.Fabricator.CraftTreeType, fab);
-        AllInOneHandHeldFabricator.StorageContainer = storageContainer;
         return true;
     }
 
@@ -49,32 +46,8 @@ public class HandHeldFabricator : PlayerTool
     {
         base.OnDraw(p);
         if (fab.animator == null) return;
-        fab.animator.SetBool(AnimatorHashID.open_fabricator, fab.state);
+        fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
+        AllInOneHandHeldFabricator.StorageContainer = storageContainer;
     }
     
-}
-
-public class HandHeldRelay : PowerRelay
-{
-    public override void Start()
-    {
-        InvokeRepeating("UpdatePowerState", Random.value, 0.5f);
-        lastCanConnect = CanMakeConnection();
-        StartCoroutine(UpdateConnectionAsync());
-        UpdatePowerState();
-        if (WaitScreen.IsWaiting)
-        {
-            lastPowered = isPowered = true;
-            powerStatus = PowerSystem.Status.Normal;
-        }
-    }
-}
-
-public class HandHeldBatterySource : BatterySource
-{
-    public override void Start()
-    {
-        RestoreBattery();
-        
-    }
 }

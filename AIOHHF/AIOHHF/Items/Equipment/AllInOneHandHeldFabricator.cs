@@ -16,6 +16,7 @@ using UnityEngine;
 using UWE;
 using Random = UnityEngine.Random;
 using AIOHHF.Mono;
+using Object = UnityEngine.Object;
 
 namespace AIOHHF.Items.Equipment;
 
@@ -30,6 +31,7 @@ public class AllInOneHandHeldFabricator
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
     public static StorageContainer StorageContainer;
+    public static List<CraftNode> ActiveNodes = new();
     public static List<CraftNode> Trees = new List<CraftNode>();
     public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
     public static void Initialize()
@@ -44,18 +46,9 @@ public class AllInOneHandHeldFabricator
         {
             var nodeRoot = new CraftNode("Root");
             const string schemeId = "AIOHHFCraftTree";
-            foreach (var fabricator in StorageContainer.container._items.Keys)
+            foreach (var fabricator in ActiveNodes)
             {
-                CraftNode craftTreeTab = new CraftNode("NRE");
-                if (fabricator == TechType.None) continue;
-                foreach (var treeType in Upgrades)
-                {
-                    if (fabricator == treeType.PrefabInfo.TechType)
-                    {
-                        craftTreeTab = treeType.Tree;
-                    }
-                }
-                nodeRoot.AddNode(craftTreeTab);
+                nodeRoot.AddNode(fabricator);
             }
             return new CraftTree(schemeId, nodeRoot);
         };
@@ -71,7 +64,7 @@ public class AllInOneHandHeldFabricator
                 model.transform.localScale = Vector3.one / 2f;
                 PostScaleValue = model.transform.localScale;
                 prefab.AddComponent<Pickupable>();
-                prefab.AddComponent<HandHeldFabricator>();
+                prefab.AddComponent<HandHeldPlayerTool>();
                 prefab.AddComponent<Rigidbody>();
                 PrefabUtils.AddWorldForces(prefab, 5);
                 StorageContainer = PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
@@ -85,7 +78,9 @@ public class AllInOneHandHeldFabricator
                     "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23" +
                     "(i forgot that i made my upgradeslib hand held fabricator the same storage root class id :sob:)", 
                     TechType.Battery, compatbats);
-
+                var fab = prefab.GetComponent<Fabricator>();
+                if (fab != null) Object.Destroy(fab);
+                prefab.AddComponent<HandHeldFabricator>();
             }
         };
         Prefab.SetGameObject(clone);
