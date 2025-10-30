@@ -27,15 +27,15 @@ public class AllInOneHandHeldFabricator
     //public static Dictionary<CraftNode, CraftTree.Type> Fabricators = new();
     public static Dictionary<CraftTree.Type, bool> PrefabRegisters = new();
     public static Dictionary<TechType, CraftNode> Nodes = new();
-    private static PrefabInfo PrefabInfo;
-    private static CustomPrefab Prefab;
+    public PrefabInfo PrefabInfo;
+    public CustomPrefab Prefab;
     //public static FabricatorGadget Fabricator;
-    public static Vector3 PostScaleValue;
-    public static CraftTree.Type TreeType;
-    private static CraftNode _nodeRoot;
-    public static List<CraftNode> Trees = new();
+    public Vector3 PostScaleValue;
+    public CraftTree.Type TreeType;
+    private CraftNode _nodeRoot;
+    //public static List<CraftNode> Trees = new();
     public static List<UpgradesPrefabs>  Upgrades =  new();
-    public static void Initialize()
+    public void Initialize()
     {
         PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 
                         "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held(tm)!" +
@@ -101,7 +101,7 @@ public class AllInOneHandHeldFabricator
         Prefab.Register();
     }
 
-    public static IEnumerator RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
+    public void RegisterPrefab(WaitScreenHandler.WaitScreenTask task)
     { 
         _nodeRoot = new CraftNode("Root");
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
@@ -142,6 +142,5 @@ public class AllInOneHandHeldFabricator
             
             if (!PrefabRegisters.ContainsKey(TreeType)) PrefabRegisters.Add(TreeType, false);
             if (!PrefabRegisters[TreeType]) Initialize();
-        yield return null;
     }
 }

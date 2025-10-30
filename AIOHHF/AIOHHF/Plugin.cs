@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Reflection;
+using AIOHHF.Items.Equipment;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using AIOHHF.Items.Equipment;
-using Nautilus.Assets;
-using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 
@@ -21,6 +19,8 @@ public class Plugin : BaseUnityPlugin
 
     public static Config ConfigOptions;
 
+    public static AllInOneHandHeldFabricator Aiohhf;
+
     private void Awake()
     {
         // set project-scoped logger instance
@@ -29,11 +29,17 @@ public class Plugin : BaseUnityPlugin
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
-        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, AllInOneHandHeldFabricator.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
+        WaitScreenHandler.RegisterLateLoadTask(PluginInfo.PLUGIN_NAME, CreatePrefabInstance, "Loading All-In-One Hand Held Fabricator");
         SaveUtils.RegisterOnQuitEvent(DeregisterPrefabs);
         ConfigOptions = OptionsPanelHandler.RegisterModOptions<Config>();
     }
 
+    public static void CreatePrefabInstance(WaitScreenHandler.WaitScreenTask task)
+    {
+        Aiohhf = new AllInOneHandHeldFabricator();
+        Aiohhf.RegisterPrefab(task);
+    }
+    
     public static void CreateCraftTree(WaitScreenHandler.WaitScreenTask task)
     {
         int secondaryiterator = 0;
@@ -41,8 +47,8 @@ public class Plugin : BaseUnityPlugin
         foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
         {
             Logger.LogDebug(treeType.ToString()+". we happy cause the enum exists now");
-            if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
-                treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AllInOneHandHeldFabricator.TreeType) continue;
+            //if (treeType == CraftTree.Type.Constructor || treeType == CraftTree.Type.None ||
+                //treeType == CraftTree.Type.Unused1 || treeType == CraftTree.Type.Unused2 || treeType == CraftTree.Type.Rocket || treeType == Items.Equipment.AllInOneHandHeldFabricator.TreeType) continue;
             task.Status =
                 $"Creating AIOHHF Tree\nTree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}";
             Logger.LogDebug(task.Status);
@@ -52,9 +58,9 @@ public class Plugin : BaseUnityPlugin
             
             foreach (CraftNode node in CraftTree.GetTree(treeType).nodes)
             {
-                task.Status = $"Creating AIOHHF Tree\nCurrent Tree: {CraftTree.GetTree(Items.Equipment.AllInOneHandHeldFabricator.TreeType)}\nAdding Tree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}\nNode Iteration: {thirditerator}\nNode Added: {node.id}";
+                //task.Status = $"Creating AIOHHF Tree\nCurrent Tree: {CraftTree.GetTree(Items.Equipment.AllInOneHandHeldFabricator.TreeType)}\nAdding Tree: {CraftTree.GetTree(treeType).id}\nIteration: {secondaryiterator}\nNode Iteration: {thirditerator}\nNode Added: {node.id}";
                             Logger.LogDebug(task.Status);
-                CraftTree.GetTree(Items.Equipment.AllInOneHandHeldFabricator.TreeType).nodes.AddNode(node);
+                //CraftTree.GetTree(Items.Equipment.AllInOneHandHeldFabricator.TreeType).nodes.AddNode(node);
                 thirditerator++;
             }
             secondaryiterator++;

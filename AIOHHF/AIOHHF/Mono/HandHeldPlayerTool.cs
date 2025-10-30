@@ -38,7 +38,7 @@ public class HandHeldPlayerTool : PlayerTool
 
     public void Update()
     {
-        gameObject.transform.localScale = AllInOneHandHeldFabricator.PostScaleValue;
+        gameObject.transform.localScale = Plugin.Aiohhf.PostScaleValue;
     }
 
     public override void OnDraw(Player p)
