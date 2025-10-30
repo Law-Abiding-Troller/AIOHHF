@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
 using HarmonyLib;
@@ -15,6 +16,8 @@ public class uGUI_CraftingMenuPatches
     [HarmonyDebug]
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
+        var clientType = __instance._client.GetType();
+        Plugin.Logger.LogDebug(clientType.ToString());
         //Check if is my fabricator, if so, cast.
         if (__instance._client is not HandHeldFabricator instance) return;
         //Search all items in my Fabricator's storage container that have a TechType
