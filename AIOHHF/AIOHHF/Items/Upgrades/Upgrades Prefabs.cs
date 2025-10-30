@@ -18,6 +18,7 @@ public class UpgradesPrefabs
         PrefabInfo = Nautilus.Assets.PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart).WithIcon(SpriteManager.Get(techType));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
+        AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
         var clone = new CloneTemplate(PrefabInfo, TechType.VehiclePowerUpgradeModule);
         clone.ModifyPrefab += obj =>
         {
@@ -30,11 +31,12 @@ public class UpgradesPrefabs
         Prefab.SetUnlock(techType);
         Prefab.Register();
     }
-    public UpgradesPrefabs(string classId, string name, string desc, CraftNode tree, RecipeData data, string lang = "English", bool unlAtStart = false)
+    /*public UpgradesPrefabs(string classId, string name, string desc, CraftNode tree, RecipeData data, string lang = "English", bool unlAtStart = false)
     {
         PrefabInfo = PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart).WithIcon(SpriteManager.Get(TechType.Fabricator));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
+        AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
         var clone = new CloneTemplate(PrefabInfo, TechType.VehiclePowerUpgradeModule);
         clone.ModifyPrefab += obj =>
         {
@@ -46,5 +48,5 @@ public class UpgradesPrefabs
             .WithCraftingTime(3f);
         Prefab.SetUnlock(TechType.PrecursorIonCrystal);
         Prefab.Register();
-    }
+    }*/
 }

@@ -24,16 +24,17 @@ namespace AIOHHF.Items.Equipment;
 public class AllInOneHandHeldFabricator
 {
     public static Dictionary<CraftTree.Type, TechType> CustomFabricators = new();
-    public static Dictionary<CraftNode, CraftTree.Type> Fabricators = new();
+    //public static Dictionary<CraftNode, CraftTree.Type> Fabricators = new();
     public static Dictionary<CraftTree.Type, bool> PrefabRegisters = new();
+    public static Dictionary<TechType, CraftNode> Nodes = new();
     private static PrefabInfo PrefabInfo;
     private static CustomPrefab Prefab;
     //public static FabricatorGadget Fabricator;
     public static Vector3 PostScaleValue;
     public static CraftTree.Type TreeType;
     private static CraftNode _nodeRoot;
-    public static List<CraftNode> Trees = new List<CraftNode>();
-    public static List<UpgradesPrefabs>  Upgrades =  new List<UpgradesPrefabs>();
+    public static List<CraftNode> Trees = new();
+    public static List<UpgradesPrefabs>  Upgrades =  new();
     public static void Initialize()
     {
         PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 

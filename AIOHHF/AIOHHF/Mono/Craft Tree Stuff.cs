@@ -83,7 +83,7 @@ public static class CraftTreeMethods
                 CraftDataHandler.GetRecipeData(TechType.Fabricator), TechType.Fabricator));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.Fabricator] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
@@ -125,7 +125,7 @@ public static class CraftTreeMethods
                     new Ingredient(TechType.PrecursorIonCrystalMatrix, 1)), TechType.None));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[treeType] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, treeType);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, treeType);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
@@ -157,7 +157,7 @@ public static class CraftTreeMethods
                     CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab));
             }
             AllInOneHandHeldFabricator.PrefabRegisters[treeType] = true;
-            AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
+            //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
             AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);
         }
@@ -186,7 +186,7 @@ public static class CraftTreeMethods
                 CraftDataHandler.GetRecipeData(TechType.Workbench), TechType.Workbench));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.Workbench] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
@@ -216,7 +216,7 @@ public static class CraftTreeMethods
                     new Ingredient(TechType.ComputerChip, 1)), TechType.Cyclops));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.CyclopsFabricator] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.CyclopsFabricator);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.CyclopsFabricator);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
@@ -243,7 +243,7 @@ public static class CraftTreeMethods
                 CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole), TechType.BaseUpgradeConsole));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.SeamothUpgrades] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.SeamothUpgrades);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.SeamothUpgrades);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
@@ -270,7 +270,7 @@ public static class CraftTreeMethods
                 CraftDataHandler.GetRecipeData(TechType.BaseMapRoom), TechType.BaseMapRoom));
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.MapRoom] = true;
-        AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.MapRoom);
+        //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.MapRoom);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }

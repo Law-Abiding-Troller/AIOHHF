@@ -20,11 +20,19 @@ public class uGUI_CraftingMenuPatches
         //Search all items in my Fabricator's storage container that have a TechType
         foreach (TechType item in instance.gameObject.GetComponent<StorageContainer>().container._items.Keys)
         {
-            //Search every Upgrade for the TechType because they are the only things in the allowed tech field
+            //Check if the TechType has a node attached to it through the Upgrade prefabs
+            if (!AllInOneHandHeldFabricator.Nodes.TryGetValue(item, out var node)) continue;
+            //Check if the node.id is the current id. If not, continue
+            if (!node.id.Equals(id)) continue;
+            //At this point, it is, so make sure it appears.
+            __result = true;
+            
+            //Scraped
+            /*//Search every Upgrade for the TechType because they are the only things in the allowed tech field
             foreach (var prefab in AllInOneHandHeldFabricator.Upgrades)
             {
                 //Is it one of the upgrades for the tree?
-                //if (!prefab.Tree.id.Equals(id)) return;
+                if (!prefab.Tree.id.Equals(id)) return;
                 //Is it my item?
                 if (item == prefab.PrefabInfo.TechType && id.Equals(prefab.Tree.id))
                 {
@@ -32,9 +40,9 @@ public class uGUI_CraftingMenuPatches
                     __result = false;
                     return;
                 }
-            }
+            }*/
         }
         //No checks were successful at this point, filter it out of the tree
-        __result = true;
+        __result = false;
     }
 }
