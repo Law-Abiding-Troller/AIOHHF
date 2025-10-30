@@ -10,7 +10,7 @@ namespace AIOHHF;
 [HarmonyPatch(typeof(uGUI_CraftingMenu))]
 public class uGUI_CraftingMenuPatches
 {
-    [HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
+    /*[HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
     [HarmonyPostfix]
     [HarmonyDebug]
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
@@ -28,7 +28,7 @@ public class uGUI_CraftingMenuPatches
             __result = true;
             
             //Scraped
-            /*//Search every Upgrade for the TechType because they are the only things in the allowed tech field
+            /*Search every Upgrade for the TechType because they are the only things in the allowed tech field
             foreach (var prefab in AllInOneHandHeldFabricator.Upgrades)
             {
                 //Is it one of the upgrades for the tree?
@@ -40,9 +40,9 @@ public class uGUI_CraftingMenuPatches
                     __result = false;
                     return;
                 }
-            }*/
+            }
         }
         //No checks were successful at this point, filter it out of the tree
         __result = false;
-    }
+    }*/
 }
