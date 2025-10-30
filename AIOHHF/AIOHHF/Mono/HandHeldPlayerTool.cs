@@ -22,6 +22,7 @@ public class HandHeldPlayerTool : PlayerTool
     public override bool OnRightHandDown()
     {
         fab.opened = true;
+        uGUI.main.craftingMenu.Open(Plugin.Aiohhf.TreeType, fab);
         return true;
     }
 
