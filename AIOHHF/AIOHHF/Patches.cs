@@ -11,15 +11,14 @@ namespace AIOHHF;
 [HarmonyPatch(typeof(uGUI_CraftingMenu))]
 public class uGUI_CraftingMenuPatches
 {
-    [HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
+    /*[HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
     [HarmonyPostfix]
     [HarmonyDebug]
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
-        var clientType = __instance._client.GetType();
-        Plugin.Logger.LogDebug(clientType.ToString());
-        //Check if is my fabricator, if so, cast.
-        if (__instance._client is not HandHeldFabricator instance) return;
+        //Check if is my fabricator
+        var instance = __instance.gameObject.GetComponent<HandHeldFabricator>();
+        if (instance == null) return;
         //Search all items in my Fabricator's storage container that have a TechType
         foreach (TechType item in instance.gameObject.GetComponent<StorageContainer>().container._items.Keys)
         {
@@ -43,9 +42,9 @@ public class uGUI_CraftingMenuPatches
                     __result = false;
                     return;
                 }
-            }*/
+            }
         }
         //No checks were successful at this point, filter it out of the tree
         __result = false;
-    }
+    }*/
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Instrumentation;
 using System.Net;
 using System.Reflection;
@@ -33,7 +34,7 @@ public class AllInOneHandHeldFabricator
     public Vector3 PostScaleValue;
     public CraftTree.Type TreeType;
     private CraftNode _nodeRoot;
-    //public static List<CraftNode> Trees = new();
+    public static List<CraftNode> Trees = new();
     public static List<UpgradesPrefabs>  Upgrades =  new();
     public void Initialize()
     {
@@ -45,8 +46,18 @@ public class AllInOneHandHeldFabricator
         Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
+            //Basic stuff for a craft tree
             const string schemeId = "AIOHHFCraftTree";
-            return new CraftTree(schemeId, _nodeRoot);
+            var nodeRoot = new CraftNode("Root");
+            //Search trees for active nodes, ToList to avoid InvalidOperationException
+            foreach (var node in Trees.ToList())
+            {
+                //Found one, add it
+                nodeRoot.AddNode(node);
+                //Remove it from the list, because there will be duplicates otherwise
+                Trees.Remove(node);
+            }
+            return new CraftTree(schemeId, nodeRoot);
         };
         PrefabRegisters[TreeType] = true;
         //Fabricator = Prefab.GetGadget<FabricatorGadget>();
