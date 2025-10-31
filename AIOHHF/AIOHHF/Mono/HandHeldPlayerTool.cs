@@ -23,23 +23,9 @@ public class HandHeldPlayerTool : PlayerTool
     }
     public override bool OnRightHandDown()
     {
-        //Set the open bool on the fabricator
         fab.opened = true;
-        //Physically open the fabricator
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        //Set close wait timer to 0
         _counter = 0f;
-        //Search through every item in the storage container for any tree
-        foreach (var item in storageContainer.container._items.Keys)
-        {
-            //If it is equal to none, skip it
-            if (item == TechType.None) continue;
-            //If the TechType is not any of my upgrades, skip it
-            if (!AllInOneHandHeldFabricator.Nodes.TryGetValue(item, out var node)) continue;
-            //Add to collection for active trees
-            AllInOneHandHeldFabricator.Trees.Add(node);
-        }
-        //Open the fabricator UI
         uGUI.main.craftingMenu.Open(Plugin.Aiohhf.TreeType, fab);
         return true;
     }
