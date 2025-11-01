@@ -19,6 +19,8 @@ public class uGUI_CraftingMenuPatches
     {
         //Check if is my fabricator, if so, cast.
         if (__instance._client is not HandHeldFabricator instance) return;
+        //Set the default case to false so that it filters everything but what the foreach loop finds
+        __result = false;
         //Search all items in my Fabricator's storage container that have a TechType
         foreach (TechType item in instance.gameObject.GetComponent<StorageContainer>().container._items.Keys)
         {
@@ -44,8 +46,6 @@ public class uGUI_CraftingMenuPatches
                 }
             }*/
         }
-        //No checks were successful at this point, filter it out of the tree
-        __result = false;
     }
 
     [HarmonyPatch(nameof(uGUI_CraftingMenu.Open))]
