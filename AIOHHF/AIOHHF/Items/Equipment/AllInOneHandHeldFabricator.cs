@@ -33,7 +33,7 @@ public class AllInOneHandHeldFabricator
     public Vector3 PostScaleValue;
     public CraftTree.Type TreeType;
     private CraftNode _nodeRoot;
-    //public static List<CraftNode> Trees = new();
+    public static List<CraftNode> Trees = new();
     public static List<UpgradesPrefabs>  Upgrades =  new();
     public void Initialize()
     {

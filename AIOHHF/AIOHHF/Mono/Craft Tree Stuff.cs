@@ -84,7 +84,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.Fabricator] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
@@ -126,7 +126,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[treeType] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, treeType);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
 
@@ -158,7 +158,7 @@ public static class CraftTreeMethods
             }
             AllInOneHandHeldFabricator.PrefabRegisters[treeType] = true;
             //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
-            //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+            AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);
         }
         return craftNodes;
@@ -187,7 +187,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.Workbench] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
@@ -217,7 +217,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.CyclopsFabricator] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.CyclopsFabricator);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
@@ -244,7 +244,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.SeamothUpgrades] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.SeamothUpgrades);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
@@ -271,7 +271,7 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.PrefabRegisters[CraftTree.Type.MapRoom] = true;
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.MapRoom);
-        //AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
+        AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
 }
