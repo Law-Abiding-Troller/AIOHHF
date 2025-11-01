@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
 using HarmonyLib;
@@ -16,8 +17,6 @@ public class uGUI_CraftingMenuPatches
     [HarmonyDebug]
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
-        var clientType = __instance._client.GetType();
-        Plugin.Logger.LogDebug(clientType.ToString());
         //Check if is my fabricator, if so, cast.
         if (__instance._client is not HandHeldFabricator instance) return;
         //Search all items in my Fabricator's storage container that have a TechType
@@ -47,5 +46,12 @@ public class uGUI_CraftingMenuPatches
         }
         //No checks were successful at this point, filter it out of the tree
         __result = false;
+    }
+
+    [HarmonyPatch(nameof(uGUI_CraftingMenu.Open))]
+    [HarmonyPrefix]
+    public static void Open_Patches(uGUI_CraftingMenu __instance, ITreeActionReceiver receiver)
+    {
+        __instance._client = receiver;
     }
 }
