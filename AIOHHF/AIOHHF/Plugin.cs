@@ -23,6 +23,8 @@ public class Plugin : BaseUnityPlugin
 
     public static readonly AllInOneHandHeldFabricator Aiohhf = new();
 
+    public static Config ConfigFile;
+
     private void Awake()
     {
         // set project-scoped logger instance
@@ -31,7 +33,8 @@ public class Plugin : BaseUnityPlugin
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
-        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
+        ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
+        WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
         Preinitialize();
     }
 

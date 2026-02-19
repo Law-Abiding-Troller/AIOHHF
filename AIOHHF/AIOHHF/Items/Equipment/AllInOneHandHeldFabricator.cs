@@ -38,6 +38,8 @@ public class AllInOneHandHeldFabricator
     internal static bool Registered = false;
     public IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
     {
+        task.Status = "Initializing All In One Hand Held Fabricator...";
+        yield return null;
         if (Registered) yield break;
         Registered = true;
         Prefab.CreateFabricator(out TreeType)
@@ -110,8 +112,8 @@ public class AllInOneHandHeldFabricator
 
         
         yield return Fragments.Initialize(task);
-        PDAHandler.AddCustomScannerEntry(Fragments.FragmentsTechType, 
-            PrefabInfo.TechType, true, 3);
+        task.Status = "Initializing All In One Hand Held Fabricator...";
+        yield return null;
         Prefab.SetEquipment(EquipmentType.Hand);
         Prefab.Register();
     }
