@@ -1,11 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Management.Instrumentation;
-using System.Net;
-using System.Reflection;
 using AIOHHF.Items.Upgrades;
-using BepInEx;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -14,8 +10,6 @@ using Nautilus.Extensions;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
-using UWE;
-using Random = UnityEngine.Random;
 using AIOHHF.Mono;
 using Object = UnityEngine.Object;
 
@@ -33,9 +27,9 @@ public class AllInOneHandHeldFabricator
     public CraftTree.Type TreeType;
     private CraftNode _nodeRoot;
     public static List<CraftNode> Trees = new();
-    public static List<UpgradesPrefabs>  Upgrades =  new();
+    public static readonly List<UpgradesPrefabs>  Upgrades =  new();
     public AssetBundle Bundle;
-    internal static bool Registered = false;
+    internal static bool Registered;
     public IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
     {
         task.Status = "Initializing All In One Hand Held Fabricator...";
@@ -85,7 +79,7 @@ public class AllInOneHandHeldFabricator
                 var texture = Bundle.LoadAsset<Texture>("AIOHHF_diffuse_and_spec");
                 if (texture == null) return;
                 renderer.material.mainTexture = texture;
-                renderer.material.SetTexture("_SpecTex", texture);
+                renderer.material.SetTexture(ShaderPropertyID._SpecTex, texture);
                 var actualModel = prefab.FindChild("submarine_fabricator_01");
                 var fpModel = prefab.AddComponent<FPModel>();
                 fpModel.viewModel = actualModel;

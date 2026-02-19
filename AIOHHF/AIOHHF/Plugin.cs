@@ -38,7 +38,7 @@ public class Plugin : BaseUnityPlugin
         Preinitialize();
     }
 
-    public static void Preinitialize()
+    private static void Preinitialize()
     {
         Aiohhf.Bundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.Location), "Assets", "aiohhfbundle"));
         Aiohhf.PrefabInfo = PrefabInfo.WithTechType("AIOHHF", "All-In-One Hand Held Fabricator", 

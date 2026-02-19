@@ -5,7 +5,6 @@ using AIOHHF.Items.Upgrades;
 using BepInEx;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
-using UnityEngine;
 
 namespace AIOHHF.Mono;
 
@@ -38,7 +37,7 @@ public static class CraftTreeMethods
     {
         if (node.action == TreeAction.Expand)
         {
-            foreach (var nodes in node)
+            foreach (var unused in node)
             {
                 string origLanguage;
                 if (origID == null) {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");}

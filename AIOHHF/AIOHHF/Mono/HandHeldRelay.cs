@@ -6,7 +6,7 @@ public class HandHeldRelay : PowerRelay
 {
     public override void Start()
     {
-        InvokeRepeating("UpdatePowerState", Random.value, 0.5f);
+        InvokeRepeating(nameof(UpdatePowerState), Random.value, 0.5f);
         lastCanConnect = CanMakeConnection();
         StartCoroutine(UpdateConnectionAsync());
         UpdatePowerState();

@@ -6,12 +6,10 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.LowLevel;
 using UWE;
 using Object = UnityEngine.Object;
 
-namespace AIOHHF.Items;
+namespace AIOHHF.Items.Equipment;
 
 public static class Fragments
 {
@@ -54,7 +52,7 @@ public static class Fragments
         for (var i = 0; i < 3; i++)
         {
             _fragmentPIs[i] = new PrefabInfo("AIOHHFF" + i, "aiohhffragprefab" + i, fragments);
-            var WEI = new WorldEntityInfo()
+            var wei = new WorldEntityInfo()
             {
                 techType = fragments,
                 classId = _fragmentPIs[i].ClassID,
@@ -64,7 +62,7 @@ public static class Fragments
                 prefabZUp = false
             };
             _fragmentCPs[i] = new CustomPrefab(_fragmentPIs[i]);
-            _fragmentCPs[i].SetSpawns(WEI, biomesToSpawnIn.ToArray());
+            _fragmentCPs[i].SetSpawns(wei, biomesToSpawnIn.ToArray());
             var i1 = i;
             _fragmentCPs[i].SetGameObject(() =>
             {

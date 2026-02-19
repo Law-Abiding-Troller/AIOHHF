@@ -1,10 +1,7 @@
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
+
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
 using HarmonyLib;
-using UnityEngine;
 
 namespace AIOHHF;
 
