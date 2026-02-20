@@ -2,6 +2,8 @@
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
 using HarmonyLib;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace AIOHHF;
 
@@ -11,7 +13,6 @@ public class uGUI_CraftingMenuPatches
 {
     [HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
     [HarmonyPostfix]
-    [HarmonyDebug]
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
         //Check if is my fabricator, if so, cast.
@@ -91,5 +92,63 @@ public class GhostCrafterPatches
             return true;
         pt.pickupable.OnHandClick(hand);
         return false;
+    }
+}
+[HarmonyPatch(typeof(uGUI_Equipment))]
+public class uGUI_EquipmentPatches
+{
+    
+    [HarmonyPatch(nameof(uGUI_Equipment.Awake))]
+    [HarmonyPrefix, HarmonyDebug]
+    public static void Awake_Patches(uGUI_Equipment __instance)
+    {
+        foreach (var slotArray in DataTypes.Slots)
+        {
+            CloneSlots(__instance, slotArray);
+        }
+    }
+    #nullable enable
+    public static uGUI_EquipmentSlot? CloneSlots(uGUI_Equipment equipment, DataTypes moddedUpgradeConsoleInput,
+        string copyTarget = "SeamothModule", string? imageTarget = "Seamoth", Vector3[]? slotPositions = null,
+        float scale = 1)
+    {
+        var slots = moddedUpgradeConsoleInput.Strings;
+        Plugin.Logger.LogInfo("Cloning slots...");
+        if (slots.Length == 0) return null;
+
+        uGUI_EquipmentSlot slot = CloneSlot(equipment, $"{copyTarget}1", slots[0], scale);
+        if (imageTarget != null)
+        {
+            var image = slot.transform.Find(imageTarget).GetComponent<Image>();
+            image.sprite = SpriteManager.Get(moddedUpgradeConsoleInput.TechType);
+            image.SetNativeSize();
+            image.color = new Color(0, image.color.g/1.4f, image.color.b, 0.25f);
+            image.rectTransform.localScale = Vector3.one;
+        }
+
+        if (slotPositions != null)
+        {
+            slot.transform.localPosition = slotPositions[0];
+        }
+
+        for (int i = 1; i < slots.Length; i++)
+        {
+            var clonedSlot = CloneSlot(equipment, $"{copyTarget}{Mathf.Min(4, i + 1)}", slots[i], scale);
+            if (slotPositions != null)
+            {
+                clonedSlot.transform.localPosition = slotPositions[i];
+            }
+        }
+        return slot;
+    }
+    #nullable disable
+    private static uGUI_EquipmentSlot CloneSlot(uGUI_Equipment equipmentMenu, string childName, string newSlotName, float scale)
+    {
+        Transform newSlot = Object.Instantiate(equipmentMenu.transform.Find(childName), equipmentMenu.transform);
+        newSlot.transform.localScale = Vector3.one * scale;
+        newSlot.name = newSlotName;
+        uGUI_EquipmentSlot equipmentSlot = newSlot.GetComponent<uGUI_EquipmentSlot>();
+        equipmentSlot.slot = newSlotName;
+        return equipmentSlot;
     }
 }

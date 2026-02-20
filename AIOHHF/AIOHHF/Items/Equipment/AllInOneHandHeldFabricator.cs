@@ -30,6 +30,8 @@ public class AllInOneHandHeldFabricator
     public static readonly List<UpgradesPrefabs>  Upgrades =  new();
     public AssetBundle Bundle;
     internal static bool Registered;
+    public const string StorageName = "AIOHHFStorageChild";
+    public const string StorageClassID = "AIOHHFStorageClassID";
     public IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
     {
         task.Status = "Initializing All In One Hand Held Fabricator...";
@@ -62,7 +64,24 @@ public class AllInOneHandHeldFabricator
                 prefab.AddComponent<Pickupable>();
                 prefab.AddComponent<Rigidbody>();
                 PrefabUtils.AddWorldForces(prefab, 5f);
-                PrefabUtils.AddStorageContainer(prefab, "AIOHHFStorageContainer", "ALL IN ONE HAND HELD FABRICATOR", 2 ,2);
+                
+                var child = new GameObject(StorageName);
+                child.transform.SetParent(prefab.transform, false);
+                var cOI = child.AddComponent<ChildObjectIdentifier>();
+                cOI.ClassId = StorageClassID;
+        
+                var component = prefab.AddComponent<ModdedDataChipContainer>();
+                var slots = new string[4];
+                for (var i = 0; i < 4; i++)
+                {
+                    var str = Plugin.EquipmentType.ToString() + (i + 1);
+                    slots[i] = str;
+                }
+                DataTypes.Slots.Add(new DataTypes(slots,PrefabInfo.TechType));
+                DataTypes.Equipment.Add(PrefabInfo.TechType, slots);
+                DataTypes.Labels.Add(PrefabInfo.TechType, "ALL IN ONE HAND HELD FABRICATOR");
+                DataTypes.ChildObjects.Add(PrefabInfo.TechType, StorageName);
+                
                 List<TechType> compatBats = new List<TechType>()
                 {
                     TechType.Battery,

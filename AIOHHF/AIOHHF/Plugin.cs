@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using AIOHHF.Items.Equipment;
+using AIOHHF.Mono;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -24,6 +25,8 @@ public class Plugin : BaseUnityPlugin
     public static readonly AllInOneHandHeldFabricator Aiohhf = new();
 
     public static Config ConfigFile;
+    
+    public static EquipmentType EquipmentType = EnumHandler.AddEntry<EquipmentType>("AIOHHF").Value;
 
     private void Awake()
     {
@@ -48,5 +51,13 @@ public class Plugin : BaseUnityPlugin
                 "Energy consumption is the same as a normal Fabricator", "English", true)
             .WithIcon(Aiohhf.Bundle.LoadAsset<Sprite>("AIOHHF_Icon")).WithSizeInInventory(new Vector2int(2,2));
         Aiohhf.Prefab = new CustomPrefab(Aiohhf.PrefabInfo);
+        var slots = new string[4];
+        for (var i = 0; i < 4; i++)
+        {
+            var str = EquipmentType.ToString() + (i + 1);
+            slots[i] = str; 
+            Equipment.slotMapping.Add(str, EquipmentType);
+        }
+        DataTypes.Slots.Add(new DataTypes(slots,Aiohhf.PrefabInfo.TechType));
     }
 }

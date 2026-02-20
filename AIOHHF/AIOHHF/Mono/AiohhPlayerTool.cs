@@ -8,7 +8,7 @@ public class AiohhPlayerTool : PlayerTool
     public AioHandHeldFabricator fab;
     public PowerRelay relay;
     public HandHeldBatterySource battery;
-    public StorageContainer storageContainer;
+    public ModdedDataChipContainer storageContainer;
     private double _counter;
     public Transform leftHand;
     public Transform rightHand;
@@ -21,7 +21,7 @@ public class AiohhPlayerTool : PlayerTool
         relay = gameObject.GetComponent<HandHeldRelay>();
         fab.powerRelay = relay;
         battery = gameObject.GetComponent<HandHeldBatterySource>();
-        storageContainer = gameObject.GetComponent<StorageContainer>();
+        storageContainer = gameObject.GetComponent<ModdedDataChipContainer>();
         pickupable = gameObject.GetComponent<Pickupable>();
         pickupable.droppedEvent.AddHandler(pickupable, parms =>
         {
@@ -59,12 +59,8 @@ public class AiohhPlayerTool : PlayerTool
 
     public override bool OnAltDown()
     {
-        if (!storageContainer.open && storageContainer != null && storageContainer.container != null)
-        {
-            storageContainer.container._label =  "ALL IN ONE HAND HELD FABRICATOR";
-            storageContainer.Open();
-        }
-
+        storageContainer.OpenPDA();
+        
         return true;
     }
 
