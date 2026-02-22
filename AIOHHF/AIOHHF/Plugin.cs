@@ -40,6 +40,7 @@ public class Plugin : BaseUnityPlugin
         ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
         LanguageHandler.RegisterLocalizationFolder();
         WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
+        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister, "Registering Modded Fabricators");
         Preinitialize();
     }
 

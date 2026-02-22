@@ -72,7 +72,7 @@ public static class CraftTreeMethods
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"FabricatorUpgrade",
+        AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"FabricatorUpgrade",
                 craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.Fabricator), TechType.Fabricator));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);

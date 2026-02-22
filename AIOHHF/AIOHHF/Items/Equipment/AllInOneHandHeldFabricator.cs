@@ -22,7 +22,6 @@ public class AllInOneHandHeldFabricator
     public static Dictionary<TechType, CraftNode> Nodes = new();
     public PrefabInfo PrefabInfo;
     public CustomPrefab Prefab;
-    public FabricatorGadget Fabricator;
     public Vector3 PostScaleValue;
     public CraftTree.Type TreeType;
     private CraftNode _nodeRoot;
@@ -30,6 +29,7 @@ public class AllInOneHandHeldFabricator
     public static readonly List<UpgradesPrefabs>  Upgrades =  new();
     public AssetBundle Bundle;
     internal static bool Registered;
+    internal static bool LateRegistered = false;
     public const string StorageName = "AIOHHFStorageChild";
     public const string StorageClassID = "AIOHHFStorageClassID";
     public IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
@@ -44,11 +44,6 @@ public class AllInOneHandHeldFabricator
             const string schemeId = "AIOHHFCraftTree";
             return new CraftTree(schemeId, _nodeRoot);
         };
-        Fabricator = Prefab.GetGadget<FabricatorGadget>().AddCraftNode(PrefabInfo.TechType, "AIOHHFCraftTree_Fabricator_Tools");
-        foreach (var upgrade in Upgrades)
-        {
-            Fabricator.AddCraftNode(upgrade.PrefabInfo.TechType, "AIOHHFCraftTree_Fabricator_Tools");
-        }
         
         var clone = new FabricatorTemplate(PrefabInfo, TreeType)
         {
@@ -102,8 +97,7 @@ public class AllInOneHandHeldFabricator
                 renderer.material.mainTexture = texture;
                 renderer.material.SetTexture(ShaderPropertyID._SpecTex, texture);
                 var actualModel = prefab.FindChild("submarine_fabricator_01");
-                //TODO: finish writing settings and conditions for perfect VXF
-                PrefabUtils.AddVFXFabricating(prefab, actualModel.name, 0,0.5f, new Vector3(0,0.05f,0), 0.5f, new Vector3(-90,0,0));
+                PrefabUtils.AddVFXFabricating(prefab, actualModel.name, -0.1f,0.2f, new Vector3(0,0.05f,0), 0.5f, new Vector3(-90,0,0));
                 var fpModel = prefab.AddComponent<FPModel>();
                 fpModel.viewModel = actualModel;
                 var copy = Object.Instantiate(actualModel, prefab.transform);
@@ -172,11 +166,32 @@ public class AllInOneHandHeldFabricator
             _nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
             var precursorNode = CraftTreeMethods.RegisterPrecursorFabricatorUpgrade();
             if (!precursorNode.id.Equals("NRE")) _nodeRoot.AddNode(precursorNode);
-            
-            foreach (CraftNode node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
-            {
-                _nodeRoot.AddNode(node);
-            }
+        
+
             yield return Initialize(task);
+    }
+    
+    public IEnumerator LateRegister(WaitScreenHandler.WaitScreenTask task)
+    {
+        task.Status = "Adding custom fabricators to AIOHHF...";
+        yield return null;
+        if (LateRegistered) yield break;
+        foreach (CraftNode node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
+        {
+            _nodeRoot.AddNode(node);
+            yield return null;
+        }
+        var nodes = _nodeRoot.FindNodeById("Fabricator_Tools");
+        var tech = Plugin.Aiohhf.PrefabInfo.TechType; 
+        foreach (var upgrade in Upgrades)
+        {
+            if (upgrade.PrefabInfo.TechType == TechType.None) continue;
+            var upgradeNode = new CraftNode("Fabricator_" + upgrade.PrefabInfo.ClassID, TreeAction.Craft,
+                upgrade.PrefabInfo.TechType);
+            nodes.AddNode(upgradeNode);
+            yield return null;
+        }
+        var noder = new CraftNode("Fabricator_AIOHHF", TreeAction.Craft, tech);
+        nodes.AddNode(noder);
     }
 }
