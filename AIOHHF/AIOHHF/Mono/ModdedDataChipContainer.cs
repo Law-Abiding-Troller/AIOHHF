@@ -35,6 +35,20 @@ public class ModdedDataChipContainer : MonoBehaviour
         Player.main.pda.Close();
     }
 
+    public bool IsEmpty()
+    {
+        if (equipment == null) return true;
+        if (equipment.equipment == null) return true;
+        if (equipment.equipment.Count <= 0) return true;
+        if (equipment.equipment.Values.Count <= 0) return true;
+        var allNull = true;
+        foreach (var e in equipment.equipment.Values)
+        {
+            if (e != null) allNull = false;
+        }
+        return allNull;
+    }
+
     private PrefabIdentifier GetPrefabIdentifier()
     {
         GameObject go = gameObject;

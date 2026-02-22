@@ -50,5 +50,6 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
       <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginsDir)/AIOHHF" />
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(PluginsDir)/AIOHHF"/>
+        <Copy SourceFiles="$(ProjectDir)English.json" DestinationFolder="$(PluginsDir)/AIOHHF/Localization"/>
     </Target>
 </Project>

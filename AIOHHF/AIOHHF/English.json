@@ -1,0 +1,23 @@
+{
+  "Tooltip_AIOHHF" : "An All-In-One Hand Held Fabricator (AIOHHF). This fabricator has all other Fabricators! And is Hand Held(tm)!\nUnfortunately, it holds no data of the Fabricator, you'll have to give it data.\nAlterra is not responsible for data loss due to damage, lost, or destruction of this fabricator.\nEnergy consumption is the same as a normal Fabricator",
+  "AIOHHF" : "All In One Hand Held Fabricator",
+  "FabricatorUpgrade" : "Fabricator Data Chip",
+  "Tooltip_FabricatorUpgrade" : "Fabricator data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "PrototypeUpgrade" : "Precursor Fabricator Data Chip",
+  "Tooltip_PrototypeUpgrade" : "Precursor Fabricator data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "CustomFabricatorClassID" : "DataChip",
+  "CustomFabricator" : " Data Chip",
+  "Tooltip_CustomFabricator" : " data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "WorkbenchDataChip" : "Modification Station Data Chip", 
+  "Tooltip_WorkbenchDataChip" : "Modification Station data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "CyclopsNode" : "Cyclops Fabricator",
+  "CyclopsDataChip" : "Cyclops Fabricator Data Chip",
+  "Tooltip_CyclopsDataChip" : "Cyclops Fabricator data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "VUCDataChip" : "Vehicle Upgrade Console Data Chip",
+  "Tooltip_VUCDataChip" : "Vehicle Upgrade Console data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "ScannerRoomDataChip" : "Scanner Room Data Chip",
+  "Tooltip_ScannerRoomDataChip" : "Scanner Room data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
+  "OpenFabText" : "Open Fabricator",
+  "OpenDataText" : "Open Data Panel",
+  "NoDataError" : "Lacking data to form a craft tree! Craft data chips in the fabricator!"
+}

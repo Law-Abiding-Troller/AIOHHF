@@ -22,7 +22,7 @@ public static class Fragments
         yield return null;
         var fragments = FragmentsTechType = EnumHandler.AddEntry<TechType>("AIOHHFFragment").Value;
         var multiplier = Plugin.ConfigFile.SpawnRate;
-        var probability = 0.075f;
+        var probability = 0.025f;
         if (multiplier < 0) probability /= 0-multiplier;
         else if (multiplier > 0) probability *= multiplier;
         var biomesToSpawnIn = new List<LootDistributionData.BiomeData>();
@@ -70,7 +70,7 @@ public static class Fragments
                     Object.Instantiate(Plugin.Aiohhf.Bundle.LoadAsset<GameObject>("aiohhffragprefab"+(i1+1)));
                 fragment.SetActive(false);
                 PrefabUtils.AddBasicComponents(fragment, _fragmentPIs[i1].ClassID, _fragmentPIs[i1].TechType,
-                    LargeWorldEntity.CellLevel.Global);
+                    LargeWorldEntity.CellLevel.Near);
                 MaterialUtils.ApplySNShaders(fragment);
                 var rb = fragment.AddComponent<Rigidbody>();
                 rb.mass = 5f;

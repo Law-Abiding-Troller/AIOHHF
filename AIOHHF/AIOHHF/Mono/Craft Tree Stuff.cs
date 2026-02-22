@@ -5,6 +5,7 @@ using AIOHHF.Items.Upgrades;
 using BepInEx;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
+using UnityEngine;
 
 namespace AIOHHF.Mono;
 
@@ -40,8 +41,7 @@ public static class CraftTreeMethods
             foreach (var unused in node)
             {
                 string origLanguage;
-                if (origID == null) {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{node.id}");}
-                else {origLanguage = Language.main.Get($"{origTreeScheme.id}Menu_{origID}");}
+                origLanguage = Language.main.Get(origID == null ? $"{origTreeScheme.id}Menu_{node.id}" : $"{origTreeScheme.id}Menu_{origID}");
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}",origLanguage);
             }
         }
@@ -67,16 +67,13 @@ public static class CraftTreeMethods
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         AddIconForNode(TechType.Fabricator, craftTreeTab, schemeId); 
         AddLanguageForNode(TechType.Fabricator, craftTreeTab, schemeId);
-        var language = Language.main.Get(TechType.Fabricator);
         foreach (var craftNode in craftTreeToYoink.nodes)
         {
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related crafting tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"FabricatorUpgrade",
+                craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.Fabricator), TechType.Fabricator));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
@@ -92,13 +89,16 @@ public static class CraftTreeMethods
             if (!AllInOneHandHeldFabricator.CustomFabricators.TryGetValue(tree, out var cusFabricator)) continue;
             if (cusFabricator.ToString().Equals("ProtoPrecursorFabricator")) treeType = tree;
         }
+
+        if (!TechTypeExtensions.FromString(treeType.ToString(), out var tech, false))
+            return new CraftNode("NRE");
         if (!AllInOneHandHeldFabricator.CustomFabricators.TryGetValue(treeType, out var customFabricator))
             return new CraftNode("NRE");
         var craftTreeToYoink = CraftTree.GetTree(treeType);
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
-        AddIconForNode(TechType.None, craftTreeTab, schemeId); 
-        AddLanguageForNode(0, craftTreeTab, schemeId);
-        var language = Language.main.Get(customFabricator);
+        var sprite = Plugin.Aiohhf.Bundle.LoadAsset<Sprite>("PrecursorFab");
+        if (sprite != null) SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{craftTreeTab.id}", sprite);
+        AddLanguageForNode(tech, craftTreeTab, schemeId);
         foreach (var craftNode in craftTreeToYoink.nodes)
         {
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
@@ -107,15 +107,14 @@ public static class CraftTreeMethods
         if (!TechTypeExtensions.FromString("AlienBuildingBlock", out var buildingBlock, false)) return new CraftNode("NRE");
         if (!TechTypeExtensions.FromString("IonPrism", out var ionPrism, false)) return new CraftNode("NRE");
         if (!TechTypeExtensions.FromString("Proto_PrecursorIngot", out var precursorIngot,false)) return new CraftNode("NRE");
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related craftig tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"PrototypeUpgrade", 
+                craftTreeTab, 
                 new RecipeData(
                     new Ingredient(buildingBlock, 1),
                     new Ingredient(ionPrism, 1),
                     new Ingredient(precursorIngot, 1),
-                    new Ingredient(TechType.PrecursorIonCrystalMatrix, 1)), TechType.None,"English", true));
+                    new Ingredient(TechType.PrecursorIonCrystalMatrix, 1)), 
+                sprite));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, treeType);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
@@ -123,7 +122,7 @@ public static class CraftTreeMethods
 
     public static List<CraftNode> RegisterCustomFabricatorUpgrades()
     {
-        const string schemeId = "AIOHHFCraftUpgrade";
+        const string schemeId = "AIOHHFCraftTree";
         List<CraftNode> craftNodes = new List<CraftNode>();
         foreach (CraftTree.Type treeType in AllInOneHandHeldFabricator.CustomFabricators.Keys)
         {
@@ -138,12 +137,11 @@ public static class CraftTreeMethods
                 AddIconForNode(craftTreeToYoink, craftNode, schemeId);
                 craftTreeTab.AddNode(craftNode);
             }
-            var language = Language.main.Get(customPrefab);
-                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                    $"{language} Tree Upgrade", 
-                    $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                    $" Gives the fabricator the related craftig tree.", craftTreeTab, 
-                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab));
+            var techType = Language.main.Get(customPrefab);
+                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(techType + Language.main.Get("CustomFabricatorClassID"),
+                    techType + Language.main.Get("CustomFabricator"), 
+                    techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.currentLanguage));
             //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
             AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);
@@ -158,16 +156,13 @@ public static class CraftTreeMethods
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         AddIconForNode(TechType.Workbench, craftTreeTab, schemeId); 
         AddLanguageForNode(TechType.Workbench, craftTreeTab, schemeId);
-        var language = Language.main.Get(TechType.Workbench);
         foreach (var craftNode in craftTreeToYoink.nodes)
         {
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related craftig tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"WorkbenchDataChip", 
+                craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.Workbench), TechType.Workbench));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
@@ -180,17 +175,14 @@ public static class CraftTreeMethods
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.CyclopsFabricator);
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         AddIconForNode(TechType.Cyclops, craftTreeTab, schemeId); 
-        AddLanguageForNode(TechType.CyclopsFabricator, craftTreeTab, schemeId);
-        var language = Language.main.Get(TechType.Cyclops);
+        LanguageHandler.SetLanguageLine($"{schemeId}Menu_{craftTreeTab.id}",Language.main.Get("CyclopsNode"));
         foreach (var craftNode in craftTreeToYoink.nodes)
         {
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related craftig tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"CyclopsDataChip",
+                craftTreeTab, 
                 new RecipeData(new Ingredient(TechType.Titanium, 3),
                     new Ingredient(TechType.Lithium, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
@@ -207,16 +199,13 @@ public static class CraftTreeMethods
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         AddIconForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId); 
         AddLanguageForNode(TechType.BaseUpgradeConsole, craftTreeTab, schemeId);
-        var language = Language.main.Get(TechType.BaseUpgradeConsole);
         foreach (var craftNode in craftTreeToYoink.nodes)
         {
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related craftig tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"VUCDataChip",
+                craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole), TechType.BaseUpgradeConsole));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.SeamothUpgrades);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
@@ -236,10 +225,8 @@ public static class CraftTreeMethods
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"{language}Upgrade",
-                $"{language} Tree Upgrade", 
-                $"{language} Tree Upgrade for the All-In-One Hand Held Fabricator." + 
-                $" Gives the fabricator the related craftig tree.", craftTreeTab, 
+            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"ScannerRoomDataChip",
+                craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.BaseMapRoom), TechType.BaseMapRoom));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.MapRoom);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);

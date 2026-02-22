@@ -17,10 +17,10 @@ public class UpgradesPrefabs
     public CustomPrefab Prefab;
     public PrefabInfo PrefabInfo;
     public CraftNode Tree;//TODO: Rip Data_Box_chip model from CAB-21e70d026be83ede5b73dcbd893aac2d
-    public UpgradesPrefabs(string classId, string name, string desc, CraftNode tree, RecipeData data, TechType techType, string lang = "English", bool unlAtStart = false)
+    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, TechType techType, bool unlAtStart = false)
     {
         if (AllInOneHandHeldFabricator.Registered) return;
-        PrefabInfo = PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart).WithIcon(SpriteManager.Get(techType));
+        PrefabInfo = PrefabInfo.WithTechType(classId, unlAtStart).WithIcon(SpriteManager.Get(techType));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
@@ -29,12 +29,14 @@ public class UpgradesPrefabs
         Prefab.SetRecipe(data).WithFabricatorType(CraftTree.Type.Fabricator)
         .WithStepsToFabricatorTab("Personal", "Tools")
         .WithCraftingTime(3f);
+        Prefab.SetEquipment(Plugin.EquipmentType);
         if (!unlAtStart) Prefab.SetUnlock(techType);
         Prefab.Register();
     }
-    /*public UpgradesPrefabs(string classId, string name, string desc, CraftNode tree, RecipeData data, string lang = "English", bool unlAtStart = false)
+    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, Sprite sprite, bool unlAtStart = false)
     {
-        PrefabInfo = PrefabInfo.WithTechType(classId, name, desc, lang, unlAtStart).WithIcon(SpriteManager.Get(TechType.Fabricator));
+        if (AllInOneHandHeldFabricator.Registered) return;
+        PrefabInfo = PrefabInfo.WithTechType(classId, unlAtStart).WithIcon(sprite);
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
@@ -48,6 +50,23 @@ public class UpgradesPrefabs
             .WithStepsToFabricatorTab("Personal", "Tools")
             .WithCraftingTime(3f);
         Prefab.SetUnlock(TechType.PrecursorIonCrystal);
+        Prefab.SetEquipment(Plugin.EquipmentType);
         Prefab.Register();
-    }*/
+    }
+    public UpgradesPrefabs(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, string lang = "English", bool unlAtStart = false)
+    {
+        if (AllInOneHandHeldFabricator.Registered) return;
+        PrefabInfo = PrefabInfo.WithTechType(classId, title, desc , lang, unlAtStart).WithIcon(SpriteManager.Get(techType));
+        Prefab = new CustomPrefab(PrefabInfo);
+        Tree = tree;
+        AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
+        var clone = new CloneTemplate(PrefabInfo, TechType.CyclopsShieldModule);
+        Prefab.SetGameObject(clone);
+        Prefab.SetRecipe(data).WithFabricatorType(CraftTree.Type.Fabricator)
+            .WithStepsToFabricatorTab("Personal", "Tools")
+            .WithCraftingTime(3f);
+        Prefab.SetEquipment(Plugin.EquipmentType);
+        if (!unlAtStart) Prefab.SetUnlock(techType);
+        Prefab.Register();
+    }
 }

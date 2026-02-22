@@ -33,10 +33,6 @@ public class AiohhPlayerTool : PlayerTool
         });
         battery.connectedRelay = relay;
         relay.AddInboundPower(battery);
-        /*_hands = Plugin.Aiohhf.Bundle.LoadAsset<GameObject>("Hands");
-        Instantiate(_hands, Player.main.gameObject.transform);
-        leftHand = _hands.FindChild("left_hand").transform;
-        rightHand = _hands.FindChild("right_hand").transform;*/
         base.Awake();
     }
 
@@ -90,11 +86,6 @@ public class AiohhPlayerTool : PlayerTool
         base.OnDraw(p);
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        if (leftHand != null && rightHand != null)
-        {
-            //leftHandIKTarget = leftHand;
-            //rightHandIKTarget = rightHand;
-        }
         _counter = 0;
     }
 
@@ -104,5 +95,11 @@ public class AiohhPlayerTool : PlayerTool
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, false);
         _counter = 0;
+    }
+
+    public override string GetCustomUseText()
+    {
+        return $"{Language.main.Get("OpenFabText")} ({GameInput.FormatButton(GameInput.Button.RightHand)}), " +
+               $"{Language.main.Get("OpenDataText")} ({GameInput.FormatButton(GameInput.Button.AltTool)})";
     }
 }
