@@ -32,6 +32,7 @@ public class Plugin : BaseUnityPlugin
     public static GameInput.Button TryPickUpButton =  EnumHandler.AddEntry<GameInput.Button>("AIOHHFTryPickUp")
         .CreateInput("","",Language.main.GetCurrentLanguage())
         .WithKeyboardBinding(GameInputHandler.Paths.Keyboard.G)
+        .WithControllerBinding(GameInputHandler.Paths.Gamepad.LeftBumper)
         .WithCategory("AIOHHF");
 
     private void Awake()
