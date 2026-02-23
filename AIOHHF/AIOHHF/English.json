@@ -19,5 +19,7 @@
   "Tooltip_ScannerRoomDataChip" : "Scanner Room data chip for the All-In-One Hand Held Fabricator.\nGives the fabricator the related crafting tree.",
   "OpenFabText" : "Open Fabricator",
   "OpenDataText" : "Open Data Panel",
-  "NoDataError" : "Lacking data to form a craft tree! Craft data chips in the fabricator!"
+  "NoDataError" : "Lacking data to form a craft tree! Craft data chips in the fabricator!",
+  "OptionAIOHHFTryPickUp" : "Try Pick Up Stored Item",
+  "OptionDesc_AIOHHFTryPickUp" : "Button for trying to pick up an item in the fabricator while crafting it",
 }

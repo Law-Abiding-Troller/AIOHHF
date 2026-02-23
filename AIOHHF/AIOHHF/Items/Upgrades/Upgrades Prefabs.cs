@@ -20,7 +20,8 @@ public class UpgradesPrefabs
     public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, TechType techType, bool unlAtStart = false)
     {
         if (AllInOneHandHeldFabricator.Registered) return;
-        PrefabInfo = PrefabInfo.WithTechType(classId, unlAtStart).WithIcon(SpriteManager.Get(techType));
+        PrefabInfo = PrefabInfo.WithTechType(classId, null, null, Language.main.GetCurrentLanguage(),
+            unlAtStart).WithIcon(SpriteManager.Get(techType));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
@@ -36,7 +37,7 @@ public class UpgradesPrefabs
     public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, Sprite sprite, bool unlAtStart = false)
     {
         if (AllInOneHandHeldFabricator.Registered) return;
-        PrefabInfo = PrefabInfo.WithTechType(classId, unlAtStart).WithIcon(sprite);
+        PrefabInfo = PrefabInfo.WithTechType(classId, null,null, Language.main.GetCurrentLanguage(), unlAtStart).WithIcon(sprite);
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);

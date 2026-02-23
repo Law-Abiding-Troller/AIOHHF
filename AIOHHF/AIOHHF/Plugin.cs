@@ -28,6 +28,11 @@ public class Plugin : BaseUnityPlugin
     public static Config ConfigFile;
     
     public static EquipmentType EquipmentType = EnumHandler.AddEntry<EquipmentType>("AIOHHF").Value;
+    
+    public static GameInput.Button TryPickUpButton =  EnumHandler.AddEntry<GameInput.Button>("AIOHHFTryPickUp")
+        .CreateInput("","",Language.main.GetCurrentLanguage())
+        .WithKeyboardBinding(GameInputHandler.Paths.Keyboard.G)
+        .WithCategory("AIOHHF");
 
     private void Awake()
     {
@@ -47,7 +52,7 @@ public class Plugin : BaseUnityPlugin
     private static void Preinitialize()
     {
         Aiohhf.Bundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.Location), "Assets", "aiohhfbundle"));
-        Aiohhf.PrefabInfo = PrefabInfo.WithTechType("AIOHHF")
+        Aiohhf.PrefabInfo = PrefabInfo.WithTechType("AIOHHF", null, null, Language.main.GetCurrentLanguage())
             .WithIcon(Aiohhf.Bundle.LoadAsset<Sprite>("AIOHHF_Icon")).WithSizeInInventory(new Vector2int(2,2));
         Aiohhf.Prefab = new CustomPrefab(Aiohhf.PrefabInfo);
         var slots = new string[4];
