@@ -74,9 +74,9 @@ public class AiohhPlayerTool : PlayerTool
                 fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
             }
 
-            if (Player.main.IsFreeToInteract())
+            if (Player.main.IsFreeToInteract() && GameInput.GetButtonDown(Plugin.TryPickUpButton))
             {
-                
+                fab.crafterLogic.TryPickup();
             }
     }
 
