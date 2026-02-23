@@ -141,7 +141,7 @@ public static class CraftTreeMethods
                 AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(techType + Language.main.Get("CustomFabricatorClassID"),
                     techType + Language.main.Get("CustomFabricator"), 
                     techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
-                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.currentLanguage));
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage()));
             //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
             AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);

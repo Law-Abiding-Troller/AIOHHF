@@ -9,9 +9,6 @@ public class AiohhPlayerTool : PlayerTool
     public PowerRelay relay;
     public HandHeldBatterySource battery;
     public ModdedDataChipContainer storageContainer;
-    private double _counter;
-    public Transform leftHand;
-    public Transform rightHand;
     public override string animToolName => "seaglide";
 
     public override void Awake()
@@ -42,19 +39,21 @@ public class AiohhPlayerTool : PlayerTool
         ikAimLeftArm = true;
         savedIkAimRightArm = true;
         savedIkAimLeftArm = true;
+        fab.crafterLogic.TryPickup();
     }
 
     public override bool OnRightHandDown()
     {
         fab.opened = true;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        _counter = 0f;
         uGUI.main.craftingMenu.Open(Plugin.Aiohhf.TreeType, fab);
+        fab.crafterLogic.TryPickup();
         return true;
     }
 
     public override bool OnAltDown()
     {
+        fab.crafterLogic.TryPickup();
         storageContainer.OpenPDA();
         
         return true;
@@ -63,43 +62,45 @@ public class AiohhPlayerTool : PlayerTool
     public void Update()
     {
             gameObject.transform.localScale = Plugin.Aiohhf.PostScaleValue;
-            _counter += Time.deltaTime;
-            if (_counter >= 7f)
-            {
-                fab.animator.SetBool(AnimatorHashID.open_fabricator, false);
-                _counter = 0;
-            }
-            else if (uGUI.main.craftingMenu.isActiveAndEnabled)
+        
+        
+            if (uGUI.main.craftingMenu.isActiveAndEnabled)
             {
                 fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-                _counter = 0;
             }
 
-            if (fab.crafterLogic.inProgress && !fab.animator.GetBool(AnimatorHashID.open_fabricator))
+            if (fab.crafterLogic.inProgress)
             {
                 fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
+            }
+
+            if (Player.main.IsFreeToInteract())
+            {
+                
             }
     }
 
     public override void OnDraw(Player p)
     {
+        fab.crafterLogic.TryPickup();
         base.OnDraw(p);
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        _counter = 0;
+        
     }
 
     public override void OnHolster()
     {
+        fab.crafterLogic.TryPickup();
         base.OnHolster();
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, false);
-        _counter = 0;
     }
 
     public override string GetCustomUseText()
     {
         return $"{Language.main.Get("OpenFabText")} ({GameInput.FormatButton(GameInput.Button.RightHand)}), " +
-               $"{Language.main.Get("OpenDataText")} ({GameInput.FormatButton(GameInput.Button.AltTool)})";
+               $"{Language.main.Get("OpenDataText")} ({GameInput.FormatButton(GameInput.Button.AltTool)}), "
+               + $"{Language.main.Get("OptionAIOHHFTryPickUp")} ({GameInput.FormatButton(Plugin.TryPickUpButton)})";
     }
 }
