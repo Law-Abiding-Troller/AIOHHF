@@ -76,7 +76,7 @@ public class AllInOneHandHeldFabricator
                 }
                 DataTypes.Slots.Add(new DataTypes(slots,PrefabInfo.TechType));
                 DataTypes.Equipment.Add(PrefabInfo.TechType, slots);
-                DataTypes.Labels.Add(PrefabInfo.TechType, "ALL IN ONE HAND HELD FABRICATOR");
+                DataTypes.Labels.Add(PrefabInfo.TechType, Language.main.Get("PanelLabel"));
                 DataTypes.ChildObjects.Add(PrefabInfo.TechType, StorageName);
                 
                 List<TechType> compatBats = new List<TechType>()

@@ -13,7 +13,6 @@ public class AiohhPlayerTool : PlayerTool
 
     public override void Awake()
     {
-        //socket = Socket.Camera;
         fab = gameObject.GetComponent<AioHandHeldFabricator>();
         relay = gameObject.GetComponent<HandHeldRelay>();
         fab.powerRelay = relay;
@@ -39,7 +38,6 @@ public class AiohhPlayerTool : PlayerTool
         ikAimLeftArm = true;
         savedIkAimRightArm = true;
         savedIkAimLeftArm = true;
-        fab.crafterLogic.TryPickup();
     }
 
     public override bool OnRightHandDown()
@@ -47,13 +45,11 @@ public class AiohhPlayerTool : PlayerTool
         fab.opened = true;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
         uGUI.main.craftingMenu.Open(Plugin.Aiohhf.TreeType, fab);
-        fab.crafterLogic.TryPickup();
         return true;
     }
 
     public override bool OnAltDown()
     {
-        fab.crafterLogic.TryPickup();
         storageContainer.OpenPDA();
         
         return true;
@@ -86,12 +82,10 @@ public class AiohhPlayerTool : PlayerTool
         base.OnDraw(p);
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, true);
-        
     }
 
     public override void OnHolster()
     {
-        fab.crafterLogic.TryPickup();
         base.OnHolster();
         if (fab.animator == null) return;
         fab.animator.SetBool(AnimatorHashID.open_fabricator, false);

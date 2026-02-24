@@ -37,6 +37,7 @@ public class Plugin : BaseUnityPlugin
 
     private void Awake()
     {
+        LanguageHandler.RegisterLocalizationFolder();
         // set project-scoped logger instance
         Logger = base.Logger;
 
@@ -44,7 +45,7 @@ public class Plugin : BaseUnityPlugin
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
-        LanguageHandler.RegisterLocalizationFolder();
+        
         WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
         WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister, "Registering Modded Fabricators");
         Preinitialize();
