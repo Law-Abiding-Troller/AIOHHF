@@ -14,7 +14,7 @@ namespace AIOHHF.Items.Equipment;
 public static class Fragments
 {
     private static PrefabInfo[] _fragmentPIs = new PrefabInfo[3];
-    private static CustomPrefab[] _fragmentCPs = new CustomPrefab[3];
+    private static CustomPrefab[] _fragmentPrefabs = new CustomPrefab[3];
     public static TechType FragmentsTechType;
     public static IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
     {
@@ -61,10 +61,10 @@ public static class Fragments
                 cellLevel = LargeWorldEntity.CellLevel.Global,
                 prefabZUp = false
             };
-            _fragmentCPs[i] = new CustomPrefab(_fragmentPIs[i]);
-            _fragmentCPs[i].SetSpawns(wei, biomesToSpawnIn.ToArray());
+            _fragmentPrefabs[i] = new CustomPrefab(_fragmentPIs[i]);
+            _fragmentPrefabs[i].SetSpawns(wei, biomesToSpawnIn.ToArray());
             var i1 = i;
-            _fragmentCPs[i].SetGameObject(() =>
+            _fragmentPrefabs[i].SetGameObject(() =>
             {
                 GameObject fragment =
                     Object.Instantiate(Plugin.Aiohhf.Bundle.LoadAsset<GameObject>("aiohhffragprefab"+(i1+1)));
@@ -80,8 +80,8 @@ public static class Fragments
                 wf.useRigidbody = rb;
                 return fragment;
             });
-            _fragmentCPs[i].CreateFragment(Plugin.Aiohhf.PrefabInfo.TechType, 3f,3, null, true, false);
-            _fragmentCPs[i].Register();
+            _fragmentPrefabs[i].CreateFragment(Plugin.Aiohhf.PrefabInfo.TechType, 3f,3, null, true, false);
+            _fragmentPrefabs[i].Register();
         }
         yield return null;
     }
