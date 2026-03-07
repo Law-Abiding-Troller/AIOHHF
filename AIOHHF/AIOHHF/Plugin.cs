@@ -48,7 +48,7 @@ public class Plugin : BaseUnityPlugin
         PatchAll();
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
-        ModMessageSystem.SendGlobal("FindMyUpdates", "waiting on link");
+        ModMessageSystem.SendGlobal("FindMyUpdates", "https://raw.githubusercontent.com/Law-Abiding-Developer/AIOHHF/refs/heads/main/AIOHHF/AIOHHF/Version.json");
         
         WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
         WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister, "Registering Modded Fabricators");
