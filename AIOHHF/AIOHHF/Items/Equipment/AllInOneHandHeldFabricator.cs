@@ -29,10 +29,11 @@ public class AllInOneHandHeldFabricator
     public static readonly List<UpgradesPrefabs>  Upgrades =  new();
     public AssetBundle Bundle;
     internal static bool Registered;
-    internal static bool LateRegistered = false;
-    public const string StorageName = "AIOHHFStorageChild";
-    public const string StorageClassID = "AIOHHFStorageClassID";
-    public IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
+    internal static bool LateRegistered;
+    internal static bool PrefabModified;
+    private const string StorageName = "AIOHHFStorageChild";
+    private const string StorageClassID = "AIOHHFStorageClassID";
+    private IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
     {
         task.Status = "Initializing All In One Hand Held Fabricator...";
         yield return null;
@@ -41,6 +42,7 @@ public class AllInOneHandHeldFabricator
         Prefab.CreateFabricator(out TreeType)
             .Root.CraftTreeCreation = () =>
         {
+            //NOTE: REMEMBER: CAN'T DO CraftTree.GetTree(TreeType)!!!
             const string schemeId = "AIOHHFCraftTree";
             return new CraftTree(schemeId, _nodeRoot);
         };
@@ -75,10 +77,14 @@ public class AllInOneHandHeldFabricator
                     slots[i] = str;
                 }
                 DataTypes.Slots.Add(new DataTypes(slots,PrefabInfo.TechType));
-                DataTypes.Equipment.Add(PrefabInfo.TechType, slots);
-                DataTypes.Labels.Add(PrefabInfo.TechType, Language.main.Get("PanelLabel"));
-                DataTypes.ChildObjects.Add(PrefabInfo.TechType, StorageName);
-                
+                if (!PrefabModified)
+                {
+                    DataTypes.Equipment.Add(PrefabInfo.TechType, slots);
+                    DataTypes.Labels.Add(PrefabInfo.TechType, Language.main.Get("PanelLabel"));
+                    DataTypes.ChildObjects.Add(PrefabInfo.TechType, StorageName);
+                    PrefabModified = true;
+                }
+
                 List<TechType> compatBats = new List<TechType>()
                 {
                     TechType.Battery,
@@ -118,7 +124,7 @@ public class AllInOneHandHeldFabricator
                 Ingredients = ingredients
             })
             .WithFabricatorType(CraftTree.Type.Fabricator)
-            .WithStepsToFabricatorTab("Personal","Tools")
+            .WithStepsToFabricatorTab("Personal","AIOHHFTab")
             .WithCraftingTime(5f);
 
         
@@ -134,6 +140,7 @@ public class AllInOneHandHeldFabricator
         if (Registered)
         { yield break;}
         _nodeRoot = new CraftNode("Root");
+        yield return Initialize(task);
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 //skip stuff that either throws exceptions, is my own tree, or is an unused tree
@@ -166,9 +173,6 @@ public class AllInOneHandHeldFabricator
             _nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
             var precursorNode = CraftTreeMethods.RegisterPrecursorFabricatorUpgrade();
             if (!precursorNode.id.Equals("NRE")) _nodeRoot.AddNode(precursorNode);
-        
-
-            yield return Initialize(task);
     }
     
     public IEnumerator LateRegister(WaitScreenHandler.WaitScreenTask task)
@@ -176,13 +180,26 @@ public class AllInOneHandHeldFabricator
         task.Status = "Adding custom fabricators to AIOHHF...";
         yield return null;
         if (LateRegistered) yield break;
-        foreach (CraftNode node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
+        LateRegistered = true;
+        foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
+        {
+            if (treeType == TreeType || !EnumHandler.ModdedEnumExists<CraftTree.Type>(treeType.ToString())) continue;
+            yield return null;
+            if (CustomFabricators.ContainsKey(treeType)) continue;
+            yield return null;
+            if (!TechTypeExtensions.FromString(treeType.ToString(), out var techType, false)) continue;
+            yield return null;
+            CustomFabricators.Add(treeType, techType);
+            yield return null;
+        }
+        
+        foreach (var node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
         {
             _nodeRoot.AddNode(node);
             yield return null;
         }
-        var nodes = _nodeRoot.FindNodeById("Fabricator_Tools");
-        var tech = Plugin.Aiohhf.PrefabInfo.TechType; 
+        
+        var nodes = _nodeRoot.FindNodeById("Fabricator_AIOHHFTab");
         foreach (var upgrade in Upgrades)
         {
             if (upgrade.PrefabInfo.TechType == TechType.None) continue;
@@ -191,7 +208,5 @@ public class AllInOneHandHeldFabricator
             nodes.AddNode(upgradeNode);
             yield return null;
         }
-        var noder = new CraftNode("Fabricator_AIOHHF", TreeAction.Craft, tech);
-        nodes.AddNode(noder);
     }
 }

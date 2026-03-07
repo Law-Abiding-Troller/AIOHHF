@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
         <AssemblyName>AIOHHF</AssemblyName>
-        <Version>0.0.1</Version>
+        <Version>1.0.5</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>11</LangVersion>
         <RootNamespace>AIOHHF</RootNamespace>
@@ -25,7 +25,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.46" PrivateAssets="all" />
+        <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.47" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -33,14 +33,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Reference Include="EasyCraft">
+        <HintPath>..\..\..\..\..\..\Library\Application Support\Steam\steamapps\common\Subnautica\BepInEx\plugins\EasyCraft\EasyCraft.dll</HintPath>
+      </Reference>
       <Reference Include="PrototypeSubMod">
-        <HintPath>..\..\..\..\..\..\Library\Application Support\Steam\steamapps\common\Subnautica\BepInEx\Funs\plugins\PrototypeSubMod\PrototypeSubMod.dll</HintPath>
+        <HintPath>..\..\..\..\..\..\Library\Application Support\Steam\steamapps\common\Subnautica\BepInEx\plugins\PrototypeSubMod\PrototypeSubMod.dll</HintPath>
       </Reference>
     </ItemGroup>
     
     <PropertyGroup>
         <!--If trying to build this project, please make sure the correct directory to your Subnautica folder is listed below:-->
-        <GameDir></GameDir>
+        <GameDir>../../../../../../Library/Application Support/Steam/steamapps/common/Subnautica</GameDir>
     </PropertyGroup>
     <!--Defines the PluginsDir property for use in the Post-Build event-->
     <PropertyGroup>
@@ -52,4 +55,8 @@
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(PluginsDir)/AIOHHF"/>
         <Copy SourceFiles="$(ProjectDir)English.json" DestinationFolder="$(PluginsDir)/AIOHHF/Localization"/>
     </Target>
+    
+    
+    
+    
 </Project>

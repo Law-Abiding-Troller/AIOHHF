@@ -44,21 +44,6 @@ public class uGUI_CraftingMenuPatches
             if (!node.id.Equals(id)) continue;
             //At this point, it is, so make sure it appears.
             __result = true;
-            
-            //Scraped
-            //Search every Upgrade for the TechType because they are the only things in the allowed tech field
-            /*foreach (var prefab in AllInOneHandHeldFabricator.Upgrades)
-            {
-                //Is it one of the upgrades for the tree?
-                if (!prefab.Tree.id.Equals(id)) return;
-                //Is it my item?
-                if (item == prefab.PrefabInfo.TechType && id.Equals(prefab.Tree.id))
-                {
-                    //Don't filter it
-                    __result = false;
-                    return;
-                }
-            }*/
         }
     }
 

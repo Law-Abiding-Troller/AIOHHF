@@ -161,7 +161,7 @@ public static class CraftTreeMethods
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"WorkbenchDataChip", 
+        AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"WorkbenchDataChip", 
                 craftTreeTab, 
                 CraftDataHandler.GetRecipeData(TechType.Workbench), TechType.Workbench));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
