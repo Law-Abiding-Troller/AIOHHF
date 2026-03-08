@@ -7,6 +7,7 @@ using AIOHHF.Mono;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
+using EasyCraft;
 using HarmonyLib;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
@@ -79,9 +80,16 @@ public class Plugin : BaseUnityPlugin
     public static void PatchAll()
     {
         var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
-        harmony.PatchAll(typeof(uGUI_CraftingMenu));
-        harmony.PatchAll(typeof(GhostCrafter));
-        harmony.PatchAll(typeof(uGUI_Equipment));
-        if (!Chainloader.PluginInfos.TryGetValue("sn.easycraft.mod", out var mod) || mod == null || mod.Instance == null) return;
+        harmony.PatchAll(typeof(uGUI_CraftingMenuPatches));
+        Logger.LogDebug("Patched uGUI_CraftingMenu");
+        harmony.PatchAll(typeof(GhostCrafterPatches));
+        Logger.LogDebug("Patched GhostCrafter");
+        harmony.PatchAll(typeof(uGUI_EquipmentPatches));
+        Logger.LogDebug("Patched uGUI_Equipment");
+        if (!Chainloader.PluginInfos.TryGetValue("sn.easycraft.mod", out var mod)) return;
+        if (mod == null) return;
+        if (mod.Instance == null) return;
+        harmony.PatchAll(typeof(ClosestFabricatorsPatches));
+        Logger.LogDebug("Patched EasyCraft");
     }
 }

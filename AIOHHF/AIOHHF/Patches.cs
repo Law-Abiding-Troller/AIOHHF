@@ -1,6 +1,8 @@
 
+using System.Linq;
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
+using EasyCraft;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,7 @@ public class uGUI_CraftingMenuPatches
 {
     [HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
     [HarmonyPostfix]
+    //ReSharper disable InconsistentNaming
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
         //Check if is my fabricator, if so, cast.
@@ -141,5 +144,18 @@ public class uGUI_EquipmentPatches
         uGUI_EquipmentSlot equipmentSlot = newSlot.GetComponent<uGUI_EquipmentSlot>();
         equipmentSlot.slot = newSlotName;
         return equipmentSlot;
+    }
+}
+
+[HarmonyPatch(typeof(ClosestFabricators))]
+public class ClosestFabricatorsPatches
+{
+    [HarmonyPatch("Find"), HarmonyPostfix]
+    public static void Find_Patches(ref GhostCrafter[] __result)
+    {
+        var list = __result.ToList();
+        var listToAdd = Player.main.GetComponentsInChildren<GhostCrafter>();
+        list.AddRange(listToAdd);
+        __result = list.ToArray();
     }
 }
