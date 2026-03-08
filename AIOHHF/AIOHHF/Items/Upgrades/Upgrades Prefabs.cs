@@ -19,8 +19,8 @@ public class UpgradesPrefabs
     public CraftNode Tree;//TODO: Rip Data_Box_chip model from CAB-21e70d026be83ede5b73dcbd893aac2d
     public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, TechType techType, bool unlAtStart = false)
     {
-        PrefabInfo = PrefabInfo.WithTechType(classId, null, null, Language.main.GetCurrentLanguage(),
-            unlAtStart).WithIcon(SpriteManager.Get(techType));
+        PrefabInfo = PrefabInfo.WithTechType(classId, null, null, Language.main.GetCurrentLanguage())
+            .WithIcon(SpriteManager.Get(techType));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
@@ -30,9 +30,9 @@ public class UpgradesPrefabs
         .WithStepsToFabricatorTab("Personal", "AIOHHFTab")
         .WithCraftingTime(3f);
         Prefab.SetEquipment(Plugin.EquipmentType);
-        if (!unlAtStart) Prefab.SetUnlock(techType);
+        Prefab.SetUnlock(unlAtStart ? Plugin.Aiohhf.PrefabInfo.TechType : techType);
         Prefab.Register();
-        Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
+        if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
     }
     public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, Sprite sprite, bool unlAtStart = false)
     {
@@ -52,11 +52,11 @@ public class UpgradesPrefabs
         Prefab.SetUnlock(TechType.PrecursorIonCrystal);
         Prefab.SetEquipment(Plugin.EquipmentType);
         Prefab.Register();
-        Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
+        if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
     }
     public UpgradesPrefabs(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, string lang = "English", bool unlAtStart = false)
     {
-        PrefabInfo = PrefabInfo.WithTechType(classId, title, desc , lang, unlAtStart).WithIcon(SpriteManager.Get(techType));
+        PrefabInfo = PrefabInfo.WithTechType(classId, title, desc , lang).WithIcon(SpriteManager.Get(techType));
         Prefab = new CustomPrefab(PrefabInfo);
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefabInfo.TechType, Tree);
@@ -66,8 +66,8 @@ public class UpgradesPrefabs
             .WithStepsToFabricatorTab("Personal", "AIOHHFTab")
             .WithCraftingTime(3f);
         Prefab.SetEquipment(Plugin.EquipmentType);
-        if (!unlAtStart) Prefab.SetUnlock(techType);
+        Prefab.SetUnlock(unlAtStart ? Plugin.Aiohhf.PrefabInfo.TechType : techType);
         Prefab.Register();
-        Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
+        if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefabInfo.ClassID} registered!");
     }
 }

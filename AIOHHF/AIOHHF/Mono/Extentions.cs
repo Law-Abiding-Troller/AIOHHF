@@ -60,4 +60,13 @@ public static class Extentions
             }
         }
     }
+
+    public static void EnsureValidClassID(this string str)
+    {
+        str = str.Replace(" ", "").Replace("_", "").Replace("/", "")
+            .Replace("-", "").Replace("+", "").Replace("=", "")
+            .Replace("[", "").Replace("]", "").Replace(",", "")
+            .Replace("{", "").Replace("}", "")
+            .Replace("'", "").Replace("|", "");
+    }
 }

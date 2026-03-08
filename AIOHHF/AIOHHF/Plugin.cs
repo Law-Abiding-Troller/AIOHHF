@@ -44,11 +44,11 @@ public class Plugin : BaseUnityPlugin
         LanguageHandler.RegisterLocalizationFolder();
         // set project-scoped logger instance
         Logger = base.Logger;
+        ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
 
         // register harmony patches, if there are any
         PatchAll();
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
-        ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
         ModMessageSystem.SendGlobal("FindMyUpdates", "https://raw.githubusercontent.com/Law-Abiding-Developer/AIOHHF/refs/heads/main/AIOHHF/AIOHHF/Version.json");
         
         WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
@@ -81,15 +81,15 @@ public class Plugin : BaseUnityPlugin
     {
         var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
         harmony.PatchAll(typeof(uGUI_CraftingMenuPatches));
-        Logger.LogDebug("Patched uGUI_CraftingMenu");
+        if (ConfigFile.DebugMode) Logger.LogDebug("Patched uGUI_CraftingMenu");
         harmony.PatchAll(typeof(GhostCrafterPatches));
-        Logger.LogDebug("Patched GhostCrafter");
+        if (ConfigFile.DebugMode) Logger.LogDebug("Patched GhostCrafter");
         harmony.PatchAll(typeof(uGUI_EquipmentPatches));
-        Logger.LogDebug("Patched uGUI_Equipment");
+        if (ConfigFile.DebugMode) Logger.LogDebug("Patched uGUI_Equipment");
         if (!Chainloader.PluginInfos.TryGetValue("sn.easycraft.mod", out var mod)) return;
         if (mod == null) return;
         if (mod.Instance == null) return;
         harmony.PatchAll(typeof(ClosestFabricatorsPatches));
-        Logger.LogDebug("Patched EasyCraft");
+        if (ConfigFile.DebugMode) Logger.LogDebug("Patched EasyCraft");
     }
 }

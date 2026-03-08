@@ -55,7 +55,7 @@ public static class CraftTreeMethods
                 LanguageHandler.SetLanguageLine($"{newTreeScheme}Menu_{node.id}", origTitle);
             else
             {
-                Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
+                if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"{origTitle} is either null or whitespace for {techType}!");
             }
         }
     }
@@ -138,7 +138,7 @@ public static class CraftTreeMethods
                 craftTreeTab.AddNode(craftNode);
             }
             var techType = Language.main.Get(customPrefab);
-                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(techType + Language.main.Get("CustomFabricatorClassID"),
+                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"),
                     techType + Language.main.Get("CustomFabricator"), 
                     techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
                     CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage(), true));

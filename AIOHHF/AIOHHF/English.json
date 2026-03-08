@@ -25,5 +25,9 @@
   "AIOHHFFragment" : "All-In-One Hand Held Fabricator Fragment",
   "Tooltip_AIOHHFFragment" : "Fragment of the All-In-One Hand Held Fabricator",
   "PanelLabel" : "ALL IN ONE HAND HELD FABRICATOR",
-  "TabName" : "All In One Hand Held Fabricator"
+  "TabName" : "All In One Hand Held Fabricator",
+  "LabelDebugMode" : "Debug Mode",
+  "TooltipDebugMode" : "Toggles debug mode. Ensure debug logging is enabled in Nautilus and BepInEx/config/BepInEx.cfg",
+  "LabelSpawnRate" : "Fragment Spawn Rate (requires restart)",
+  "TooltipSpawnRate" : "Increases or decreases the rate at which the fragments spawn. 0, 1, or -1 will change nothing."
 }
