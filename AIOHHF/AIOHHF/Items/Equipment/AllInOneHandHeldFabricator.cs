@@ -66,6 +66,7 @@ public class AllInOneHandHeldFabricator
                 
                 var child = new GameObject(StorageName);
                 child.transform.SetParent(prefab.transform, false);
+                // ReSharper disable once InconsistentNaming
                 var cOI = child.AddComponent<ChildObjectIdentifier>();
                 cOI.ClassId = StorageClassID;
         
@@ -132,6 +133,11 @@ public class AllInOneHandHeldFabricator
         task.Status = "Initializing All In One Hand Held Fabricator...";
         yield return null;
         Prefab.SetEquipment(EquipmentType.Hand);
+        var techGroup = EnumHandler.AddEntry<TechGroup>("AIOHHFGroup").WithPdaInfo(null).Value;
+        var techCategory = EnumHandler.AddEntry<TechCategory>("AIOHHFCategory").RegisterToTechGroup(techGroup)
+            .WithPdaInfo(null).Value;
+        Prefab.SetUnlock(Fragments.FragmentsTechType, 3).WithPdaGroupCategory(techGroup, techCategory)
+            .WithAnalysisTech(null).WithEncyclopediaEntry("", null);
         Prefab.Register();
     }
 
@@ -139,8 +145,21 @@ public class AllInOneHandHeldFabricator
     {
         if (Registered)
         { yield break;}
+        
+        task.Status = "Initializing All In One Hand Held Fabricator...";
+        
         _nodeRoot = new CraftNode("Root");
+        //register the aiohhf
         yield return Initialize(task);
+        
+        //restore fabricators from Fabricator Cache
+        Plugin.CustomFabricatorCache.Load();
+        foreach (var fabricator in Plugin.CustomFabricatorCache.TechTypeToCustomFabricator)
+        {
+            Upgrades.Add(new UpgradesPrefabs(fabricator.Key, fabricator.Value));
+        }
+        
+        //get all fabricators
             foreach (CraftTree.Type treeType in Enum.GetValues(typeof(CraftTree.Type)))
             {
                 //skip stuff that either throws exceptions, is my own tree, or is an unused tree
@@ -149,7 +168,7 @@ public class AllInOneHandHeldFabricator
                     treeType == CraftTree.Type.Rocket || treeType == TreeType
                     || treeType == CraftTree.Type.Centrifuge) continue;
                 
-                //techtype to set with a scope outside of each if statement
+                //techtype to set with a scope outside each if statement
                 TechType techType;
                 //get the craft tree's techtype
                 if (!TechTypeExtensions.FromString(treeType.ToString(), out techType, false)
@@ -202,9 +221,9 @@ public class AllInOneHandHeldFabricator
         var nodes = _nodeRoot.FindNodeById("Fabricator_AIOHHFTab");
         foreach (var upgrade in Upgrades)
         {
-            if (upgrade.PrefabInfo.TechType == TechType.None) continue;
-            var upgradeNode = new CraftNode("Fabricator_" + upgrade.PrefabInfo.ClassID, TreeAction.Craft,
-                upgrade.PrefabInfo.TechType);
+            if (upgrade == null || upgrade.PrefInf.TechType == TechType.None) continue;
+            var upgradeNode = new CraftNode("Fabricator_" + upgrade.PrefInf.ClassID, TreeAction.Craft,
+                upgrade.PrefInf.TechType);
             nodes.AddNode(upgradeNode);
             yield return null;
         }

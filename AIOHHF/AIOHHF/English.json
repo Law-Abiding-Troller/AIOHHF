@@ -26,8 +26,14 @@
   "Tooltip_AIOHHFFragment" : "Fragment of the All-In-One Hand Held Fabricator",
   "PanelLabel" : "ALL IN ONE HAND HELD FABRICATOR",
   "TabName" : "All In One Hand Held Fabricator",
-  "LabelDebugMode" : "Debug Mode",
+  "LabelDebugMode" : "Debug Mode (requires restart)",
   "TooltipDebugMode" : "Toggles debug mode. Ensure debug logging is enabled in Nautilus and BepInEx/config/BepInEx.cfg",
   "LabelSpawnRate" : "Fragment Spawn Rate (requires restart)",
-  "TooltipSpawnRate" : "Increases or decreases the rate at which the fragments spawn. 0, 1, or -1 will change nothing."
+  "TooltipSpawnRate" : "Increases or decreases the rate at which the fragments spawn. 0, 1, or -1 will change nothing.",
+  "LabelAmountOfTechTypes" : "Amount Of Modded Fabricators",
+  "TooltipAmountOfTechTypes" : "Slide to change the amount of reserved space for all modded fabricators on load. Increases load time by Multiplier*[amount] frames",
+  "LabelMultiplier" : "Multiplier",
+  "TooltipMultiplier": "Slide to change the multiplier of Amount of Modded Fabricators",
+  "AwaitingTitle" : "Awaiting Reset...",
+  "AwaitingDesc" : "Awaiting change in the item's state to acquire data. You can equip the item in the AIOHHF or transfer it to another storage container. This will also reset the icon"
 }

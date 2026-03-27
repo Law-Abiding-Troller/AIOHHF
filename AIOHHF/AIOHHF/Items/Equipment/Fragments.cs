@@ -80,7 +80,8 @@ public static class Fragments
                 wf.useRigidbody = rb;
                 return fragment;
             });
-            _fragmentPrefabs[i].CreateFragment(Plugin.Aiohhf.PrefabInfo.TechType, 3f,3, null, true, false);
+            _fragmentPrefabs[i].CreateFragment(Plugin.Aiohhf.PrefabInfo.TechType, 
+                3f,3);
             _fragmentPrefabs[i].Register();
         }
         yield return null;

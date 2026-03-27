@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AIOHHF.Items.Equipment;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,7 +11,7 @@ public class ModdedDataChipContainer : MonoBehaviour
     private string[] slots;
     public Equipment equipment;
     private GameObject _child;
-
+    private readonly List<string> _equippedNodes = new();
     public void Start()
     {
         if (equipment == null) InitializeEquipment();
@@ -25,8 +26,11 @@ public class ModdedDataChipContainer : MonoBehaviour
         equipment._label = DataTypes.Labels[techType];
         equipment.AddSlots(slots);
         equipment.Recover(_child.transform, slots);
+        equipment.onEquip += OnEquip;
+        equipment.onUnequip += OnUnequip;
     }
 
+    // ReSharper disable once InconsistentNaming
     public void OpenPDA()
     {
         if (equipment == null) return;
@@ -49,7 +53,19 @@ public class ModdedDataChipContainer : MonoBehaviour
         return allNull;
     }
 
-    private PrefabIdentifier GetPrefabIdentifier()
+    public void OnEquip(string str, InventoryItem item)
+    {
+        if (!AllInOneHandHeldFabricator.Nodes.TryGetValue(item.techType, out var node)) return;
+        _equippedNodes.Add(node.id);
+    }
+
+    public void OnUnequip(string str, InventoryItem item)
+    {
+        if (!AllInOneHandHeldFabricator.Nodes.TryGetValue(item.techType, out var node)) return;
+        _equippedNodes.Remove(node.id);
+    }
+    
+    /*private PrefabIdentifier GetPrefabIdentifier()
     {
         GameObject go = gameObject;
         while (go.GetComponent<PrefabIdentifier>() == null)
@@ -57,6 +73,12 @@ public class ModdedDataChipContainer : MonoBehaviour
             go = go.transform.parent.gameObject;
         }
         return go.GetComponent<PrefabIdentifier>();
+    }*/
+
+    public bool IsNodeEquipped(string id)
+    {
+        var boolean = _equippedNodes.Contains(id);
+        return boolean;
     }
 }
 
@@ -66,8 +88,8 @@ public class DataTypes
     public static readonly Dictionary<TechType, string[]> Equipment = new();
     public static readonly Dictionary<TechType, string> Labels = new();
     public static readonly Dictionary<TechType, string> ChildObjects = new();
-    public string[] Strings;
-    public TechType TechType;
+    public readonly string[] Strings;
+    public readonly TechType TechType;
     public DataTypes(string[] strings, TechType techType)
     {
         Strings = strings;

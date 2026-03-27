@@ -138,10 +138,19 @@ public static class CraftTreeMethods
                 craftTreeTab.AddNode(craftNode);
             }
             var techType = Language.main.Get(customPrefab);
-                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"),
+            if (UpgradesPrefabs.AwaitingTreeCatch.TryGetValue(customPrefab.AsString(), out var caughtPrefab))
+            {
+                caughtPrefab.OnCraftTreeAcquired(techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"), 
                     techType + Language.main.Get("CustomFabricator"), 
                     techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
-                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage(), true));
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage());
+            }
+            else 
+                AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(
+                techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"), 
+                techType + Language.main.Get("CustomFabricator"), 
+                techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage()));
             //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
             AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);

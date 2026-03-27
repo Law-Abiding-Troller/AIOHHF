@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Reflection;
 using AIOHHF.Items.Equipment;
@@ -7,10 +6,8 @@ using AIOHHF.Mono;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
-using EasyCraft;
 using HarmonyLib;
 using Nautilus.Assets;
-using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using Nautilus.Utility.ModMessages;
@@ -21,6 +18,7 @@ namespace AIOHHF;
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
 [BepInDependency("sn.easycraft.mod", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("com.prototech.prototypesub", BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin : BaseUnityPlugin
 {
     public new static ManualLogSource Logger { get; private set; }
@@ -30,6 +28,8 @@ public class Plugin : BaseUnityPlugin
     public static readonly AllInOneHandHeldFabricator Aiohhf = new();
 
     public static Config ConfigFile;
+
+    public static readonly CustomFabricatorCache CustomFabricatorCache = new();
     
     public static EquipmentType EquipmentType = EnumHandler.AddEntry<EquipmentType>("AIOHHF").Value;
     
@@ -51,12 +51,13 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         ModMessageSystem.SendGlobal("FindMyUpdates", "https://raw.githubusercontent.com/Law-Abiding-Developer/AIOHHF/refs/heads/main/AIOHHF/AIOHHF/Version.json");
         
-        WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab, "Loading All-In-One Hand Held Fabricator");
-        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister, "Registering Modded Fabricators");
-        Preinitialize();
+        SaveUtils.RegisterOnSaveEvent(() => CustomFabricatorCache.Save());
+        WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab,"Loading All-In-One Hand Held Fabricator");
+        WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister,"Registering Modded Fabricators"); 
+        StartCoroutine(Preinitialize());
     }
 
-    private static void Preinitialize()
+    private static IEnumerator Preinitialize()
     {
         Aiohhf.Bundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.Location),
             "Assets", "aiohhfbundle"));
@@ -66,6 +67,8 @@ public class Plugin : BaseUnityPlugin
         Aiohhf.PrefabInfo = PrefabInfo.WithTechType("AIOHHF", null, 
                 null, Language.main.GetCurrentLanguage())
             .WithIcon(icon).WithSizeInInventory(new Vector2int(2,2));
+        yield return null;
+        
         Aiohhf.Prefab = new CustomPrefab(Aiohhf.PrefabInfo);
         var slots = new string[4];
         for (var i = 0; i < 4; i++)

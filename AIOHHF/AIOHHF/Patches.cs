@@ -11,11 +11,11 @@ namespace AIOHHF;
 
 
 [HarmonyPatch(typeof(uGUI_CraftingMenu))]
+//ReSharper disable InconsistentNaming
 public class uGUI_CraftingMenuPatches
 {
     [HarmonyPatch(typeof(uGUI_CraftingMenu),nameof(uGUI_CraftingMenu.Filter), typeof(string))]
     [HarmonyPostfix]
-    //ReSharper disable InconsistentNaming
     public static void Filter_Patches(uGUI_CraftingMenu __instance, string id, ref bool __result)
     {
         //Check if is my fabricator, if so, cast.
@@ -28,26 +28,12 @@ public class uGUI_CraftingMenuPatches
             //If true, set isSuperTab to True
             if (item.id.Equals(id)) isSuperTab = true;
         }
-        //Set the default case to false so long as is it a Super Tab so
-        //that it filters everything but what the foreach loop finds
-        if (isSuperTab) __result = false;
+
+        if (!isSuperTab) return;
         var dataContainer = instance.gameObject.GetComponent<ModdedDataChipContainer>();
         if (dataContainer == null) return;
         if (dataContainer.IsEmpty()) return;
-        var items = dataContainer.equipment.equipment.Values;
-        //Search all items in my Fabricator's storage container that have a TechType
-        foreach (InventoryItem inventoryItem in items)
-        {
-            if (inventoryItem == null) continue;
-            var tech = inventoryItem.techType;
-            //Check if the TechType has a node attached to it through the
-            //Upgrade prefabs
-            if (!AllInOneHandHeldFabricator.Nodes.TryGetValue(tech, out var node)) continue;
-            //Check if the node.id is the current id. If not, continue
-            if (!node.id.Equals(id)) continue;
-            //At this point, it is, so make sure it appears.
-            __result = true;
-        }
+        __result = dataContainer.IsNodeEquipped(id);
     }
 
     [HarmonyPatch(nameof(uGUI_CraftingMenu.Open))]

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using AIOHHF.Items.Upgrades;
+using Nautilus.Crafting;
 using UnityEngine;
 
 namespace AIOHHF.Mono;
