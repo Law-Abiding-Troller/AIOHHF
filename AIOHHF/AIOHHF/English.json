@@ -35,5 +35,9 @@
   "LabelMultiplier" : "Multiplier",
   "TooltipMultiplier": "Slide to change the multiplier of Amount of Modded Fabricators",
   "AwaitingTitle" : "Awaiting Reset...",
-  "AwaitingDesc" : "Awaiting change in the item's state to acquire data. You can equip the item in the AIOHHF or transfer it to another storage container. This will also reset the icon"
+  "AwaitingDesc" : "Awaiting change in the item's state to acquire data. You can equip the item in the AIOHHF or transfer it to another storage container. This will also reset the icon",
+  "Error" : "No language data for upgrade!",
+  "Tooltip_Error" : "Unfortunately, we have failed to parse the data required to give this upgrade a proper name and description. Please reload your game. If this issue persists, contact the people that made the mod that contains this class id: ",
+  "Icon_Error" : "No icon parsed for upgrade! See upgrade description. Class id: ",
+  "Ency_AIOHHF" : "The All-In-One Hand Held Fabricator is a tool used for mobile fabrication. Originally limited to what was required by an Alterra Employee, an emergency mode has been activated automatically to increase survival probability. "
 }

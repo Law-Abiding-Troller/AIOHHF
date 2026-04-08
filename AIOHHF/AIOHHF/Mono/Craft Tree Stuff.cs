@@ -92,8 +92,6 @@ public static class CraftTreeMethods
 
         if (!TechTypeExtensions.FromString(treeType.ToString(), out var tech, false))
             return new CraftNode("NRE");
-        if (!AllInOneHandHeldFabricator.CustomFabricators.TryGetValue(treeType, out var customFabricator))
-            return new CraftNode("NRE");
         var craftTreeToYoink = CraftTree.GetTree(treeType);
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         var sprite = Plugin.Aiohhf.Bundle.LoadAsset<Sprite>("PrecursorFab");
@@ -104,10 +102,8 @@ public static class CraftTreeMethods
             AddIconForNode(craftTreeToYoink, craftNode, schemeId);
             craftTreeTab.AddNode(craftNode);
         }
-        if (!TechTypeExtensions.FromString("AlienBuildingBlock", out var buildingBlock, false)) return new CraftNode("NRE");
-        if (!TechTypeExtensions.FromString("IonPrism", out var ionPrism, false)) return new CraftNode("NRE");
-        if (!TechTypeExtensions.FromString("Proto_PrecursorIngot", out var precursorIngot,false)) return new CraftNode("NRE");
-            AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"PrototypeUpgrade", 
+        if (!TechTypeExtensions.FromString("AlienBuildingBlock", out var buildingBlock, false) || !TechTypeExtensions.FromString("IonPrism", out var ionPrism, false) || !TechTypeExtensions.FromString("Proto_PrecursorIngot", out var precursorIngot,false)) return new CraftNode("NRE");
+        AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"PrototypeUpgrade", 
                 craftTreeTab, 
                 new RecipeData(
                     new Ingredient(buildingBlock, 1),

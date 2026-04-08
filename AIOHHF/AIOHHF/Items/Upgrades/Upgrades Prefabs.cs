@@ -100,10 +100,16 @@ public class UpgradesPrefabs
         {
             LanguageHandler.SetLanguageLine(name, title, lang);
         }
+        else
+            LanguageHandler.SetLanguageLine(name, Language.main.Get("Error"));
         if (!string.IsNullOrEmpty(desc))
         {
             LanguageHandler.SetLanguageLine("Tooltip_" + name, desc, lang);
         }
+        else
+            LanguageHandler.SetLanguageLine("Tooltip_" + name, Language.main.Get("Tooltip_Error"));
+        if (techType == TechType.None)
+            ErrorMessage.AddError(Language.main.Get("Icon_Error"));
         PrefInf.WithIcon(SpriteManager.Get(techType));
         Tree = tree;
         AllInOneHandHeldFabricator.Nodes.Add(PrefInf.TechType, Tree);

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using AIOHHF.Items.Equipment;
@@ -54,6 +55,11 @@ public class Plugin : BaseUnityPlugin
         SaveUtils.RegisterOnSaveEvent(() => CustomFabricatorCache.Save());
         WaitScreenHandler.RegisterEarlyAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.RegisterPrefab,"Loading All-In-One Hand Held Fabricator");
         WaitScreenHandler.RegisterLateAsyncLoadTask(PluginInfo.PLUGIN_NAME, Aiohhf.LateRegister,"Registering Modded Fabricators"); 
+        ConsoleCommandsHandler.RegisterConsoleCommand("debugaiohhf", () =>
+        {
+            SendCommands("freedom", "clearinventory","invisible", "nocost", "item knife", "item builder", "item scanner", "item seaglide", "oxygen", "fastscan","fastswim");
+        });
+        
         StartCoroutine(Preinitialize());
     }
 
@@ -94,5 +100,13 @@ public class Plugin : BaseUnityPlugin
         if (mod.Instance == null) return;
         harmony.PatchAll(typeof(ClosestFabricatorsPatches));
         if (ConfigFile.DebugMode) Logger.LogDebug("Patched EasyCraft");
+    }
+
+    public static void SendCommands(params string[] commands)
+    {
+        foreach (var command in commands)
+        {
+            DevConsole.SendConsoleCommand(command);
+        }
     }
 }

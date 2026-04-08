@@ -11,6 +11,7 @@ using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
 using AIOHHF.Mono;
+using FMODUnity;
 using Object = UnityEngine.Object;
 
 namespace AIOHHF.Items.Equipment;
@@ -63,6 +64,10 @@ public class AllInOneHandHeldFabricator
                 prefab.AddComponent<Pickupable>();
                 prefab.AddComponent<Rigidbody>();
                 PrefabUtils.AddWorldForces(prefab, 5f);
+                var constructable = prefab.GetComponent<Constructable>();
+                constructable.deconstructionAllowed = false;
+                constructable.DestroyModelCopy();
+                
                 
                 var child = new GameObject(StorageName);
                 child.transform.SetParent(prefab.transform, false);
@@ -93,7 +98,7 @@ public class AllInOneHandHeldFabricator
                 };
                 prefab.AddComponent<HandHeldRelay>().dontConnectToRelays = true;
                 PrefabUtils.AddEnergyMixin<HandHeldBatterySource>(prefab, 
-                    "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Lee23" +
+                    "'I don't really get why it exists, it just decreases the chance of a collision from like 9.399613e-55% to like 8.835272e-111%, both are very small numbers' - Kallie23" +
                     "(i forgot that i made my upgradeslib hand held fabricator the same storage root class id 😭 - written by lad)", 
                     TechType.Battery, compatBats);
                 prefab.AddComponent<AiohhPlayerTool>();
@@ -103,6 +108,7 @@ public class AllInOneHandHeldFabricator
                 if (texture == null) return;
                 renderer.material.mainTexture = texture;
                 renderer.material.SetTexture(ShaderPropertyID._SpecTex, texture);
+                
                 var actualModel = prefab.FindChild("submarine_fabricator_01");
                 PrefabUtils.AddVFXFabricating(prefab, actualModel.name, -0.1f,0.2f, new Vector3(0,0.05f,0), 0.5f, new Vector3(-90,0,0));
                 var fpModel = prefab.AddComponent<FPModel>();
@@ -137,7 +143,7 @@ public class AllInOneHandHeldFabricator
         var techCategory = EnumHandler.AddEntry<TechCategory>("AIOHHFCategory").RegisterToTechGroup(techGroup)
             .WithPdaInfo(null).Value;
         Prefab.SetUnlock(Fragments.FragmentsTechType, 3).WithPdaGroupCategory(techGroup, techCategory)
-            .WithAnalysisTech(null).WithEncyclopediaEntry("", null);
+            .WithAnalysisTech(null, AudioUtils.GetFmodAsset("event:/tools/scanner/new_blueprint")).WithEncyclopediaEntry("Tech/Equipment", null);
         Prefab.Register();
     }
 

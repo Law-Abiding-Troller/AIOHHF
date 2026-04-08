@@ -28,25 +28,24 @@ public static class Fragments
         var biomesToSpawnIn = new List<LootDistributionData.BiomeData>();
         foreach (BiomeType item in Enum.GetValues(typeof(BiomeType)))
         {
-            if (!(item.AsString().Contains("Obsolete") || item.AsString().Contains("Unused")
-                    || item.AsString().Contains("Wall") || item.AsString().Contains("Open")
-                    || item.AsString().Contains("Ceiling") )
-                && (item.AsString().Contains("Tech")
-                    || item.AsString().Contains("EscapePod")
-                    || item.AsString().Contains("Ship")
-                    || item.AsString().Contains("Aurora")
-                    || item.AsString().Contains("Crash")
-                    || item.AsString().Contains("Supply")))
+            if (item.AsString().Contains("Obsolete") || item.AsString().Contains("Unused") 
+                                                     || item.AsString().Contains("Wall")
+                                                     || item.AsString().Contains("Open")
+                                                     || item.AsString().Contains("Ceiling") 
+                                                     || item.AsString().Contains("Home")
+                                                     || (!item.AsString().Contains("Tech")
+                                                         && !item.AsString().Contains("EscapePod")
+                                                         && !item.AsString().Contains("Ship")
+                                                         && !item.AsString().Contains("Aurora")
+                                                         && !item.AsString().Contains("Crash")
+                                                         && !item.AsString().Contains("Supply"))) continue;
+            biomesToSpawnIn.Add(new LootDistributionData.BiomeData()
             {
-                
-                biomesToSpawnIn.Add(new LootDistributionData.BiomeData()
-                {
-                    biome = item,
-                    probability = probability,
-                    count = 1
-                });
-                yield return null;
-            }
+                biome = item,
+                probability = probability,
+                count = 1
+            });
+            yield return null;
         }
         
         for (var i = 0; i < 3; i++)
