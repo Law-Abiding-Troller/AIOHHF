@@ -60,7 +60,7 @@ public static class CraftTreeMethods
         }
     }
 
-    public static CraftNode RegisterFabricatorUpgrade()
+    public static CraftNode RegisterFabricatorUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.Fabricator);
@@ -74,13 +74,13 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"FabricatorUpgrade",
                 craftTreeTab, 
-                CraftDataHandler.GetRecipeData(TechType.Fabricator), TechType.Fabricator));
+                CraftDataHandler.GetRecipeData(TechType.Fabricator), TechType.Fabricator, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
-    public static CraftNode RegisterPrecursorFabricatorUpgrade()
+    public static CraftNode RegisterPrecursorFabricatorUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         CraftTree.Type treeType = CraftTree.Type.None;
@@ -110,13 +110,13 @@ public static class CraftTreeMethods
                     new Ingredient(ionPrism, 1),
                     new Ingredient(precursorIngot, 1),
                     new Ingredient(TechType.PrecursorIonCrystalMatrix, 1)), 
-                sprite));
+                sprite, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, treeType);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
 
-    public static List<CraftNode> RegisterCustomFabricatorUpgrades()
+    public static List<CraftNode> RegisterCustomFabricatorUpgrades(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         List<CraftNode> craftNodes = new List<CraftNode>();
@@ -139,14 +139,14 @@ public static class CraftTreeMethods
                 caughtPrefab.OnCraftTreeAcquired(techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"), 
                     techType + Language.main.Get("CustomFabricator"), 
                     techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
-                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage());
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, category, group, Language.main.GetCurrentLanguage());
             }
             else 
                 AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs(
                 techType.Replace(" ", "") + Language.main.Get("CustomFabricatorClassID"), 
                 techType + Language.main.Get("CustomFabricator"), 
                 techType + Language.main.Get("Tooltip_CustomFabricator"), craftTreeTab, 
-                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, Language.main.GetCurrentLanguage()));
+                    CraftDataHandler.GetModdedRecipeData(customPrefab), customPrefab, category, group, Language.main.GetCurrentLanguage()));
             //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Fabricator);
             AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
             craftNodes.Add(craftTreeTab);
@@ -154,7 +154,7 @@ public static class CraftTreeMethods
         return craftNodes;
     }
     
-    public static CraftNode RegisterWorkbenchUpgrade()
+    public static CraftNode RegisterWorkbenchUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.Workbench);
@@ -168,13 +168,13 @@ public static class CraftTreeMethods
         }
         AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"WorkbenchDataChip", 
                 craftTreeTab, 
-                CraftDataHandler.GetRecipeData(TechType.Workbench), TechType.Workbench));
+                CraftDataHandler.GetRecipeData(TechType.Workbench), TechType.Workbench, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.Workbench);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
-    public static CraftNode RegisterCyclopsFabricatorUpgrade()
+    public static CraftNode RegisterCyclopsFabricatorUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.CyclopsFabricator);
@@ -191,13 +191,13 @@ public static class CraftTreeMethods
                 new RecipeData(new Ingredient(TechType.Titanium, 3),
                     new Ingredient(TechType.Lithium, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
-                    new Ingredient(TechType.ComputerChip, 1)), TechType.Cyclops));
+                    new Ingredient(TechType.ComputerChip, 1)), TechType.Cyclops, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.CyclopsFabricator);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
-    public static CraftNode RegisterVehicleUpgradeConsoleUpgrade()
+    public static CraftNode RegisterVehicleUpgradeConsoleUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.SeamothUpgrades);
@@ -211,13 +211,13 @@ public static class CraftTreeMethods
         }
             AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"VUCDataChip",
                 craftTreeTab, 
-                CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole), TechType.BaseUpgradeConsole));
+                CraftDataHandler.GetRecipeData(TechType.BaseUpgradeConsole), TechType.BaseUpgradeConsole, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.SeamothUpgrades);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;
     }
     
-    public static CraftNode RegisterScannerRoomUpgrade()
+    public static CraftNode RegisterScannerRoomUpgrade(TechCategory category, TechGroup group)
     {
         const string schemeId = "AIOHHFCraftTree";
         var craftTreeToYoink = CraftTree.GetTree(CraftTree.Type.MapRoom);
@@ -232,7 +232,7 @@ public static class CraftTreeMethods
         }
             AllInOneHandHeldFabricator.Upgrades.Add(new UpgradesPrefabs($"ScannerRoomDataChip",
                 craftTreeTab, 
-                CraftDataHandler.GetRecipeData(TechType.BaseMapRoom), TechType.BaseMapRoom));
+                CraftDataHandler.GetRecipeData(TechType.BaseMapRoom), TechType.BaseMapRoom, category, group));
         //AllInOneHandHeldFabricator.Fabricators.Add(craftTreeTab, CraftTree.Type.MapRoom);
         AllInOneHandHeldFabricator.Trees.Add(craftTreeTab);
         return craftTreeTab;

@@ -16,7 +16,7 @@ public class UpgradesPrefabs
     public CraftNode Tree;//TODO: Rip Data_Box_chip model from CAB-21e70d026be83ede5b73dcbd893aac2d
     public string unknownTechType;
     public static readonly Dictionary<string, UpgradesPrefabs> AwaitingTreeCatch =  new();
-    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, TechType techType, bool unlAtStart = false)
+    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, TechType techType, TechCategory category, TechGroup group, bool unlAtStart = false)
     {
         PrefInf = PrefabInfo.WithTechType(classId, null, null, Language.main.GetCurrentLanguage())
             .WithIcon(SpriteManager.Get(techType));
@@ -29,11 +29,11 @@ public class UpgradesPrefabs
         .WithStepsToFabricatorTab("Personal", "AIOHHFTab")
         .WithCraftingTime(3f);
         Prefab.SetEquipment(Plugin.EquipmentType);
-        Prefab.SetUnlock(unlAtStart ? Plugin.Aiohhf.PrefabInfo.TechType : techType);
+        Prefab.SetUnlock(unlAtStart ? Plugin.Aiohhf.PrefabInfo.TechType : techType).WithPdaGroupCategory(group, category);
         Prefab.Register();
         if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefInf.ClassID} registered!");
     }
-    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, Sprite sprite, bool unlAtStart = false)
+    public UpgradesPrefabs(string classId, CraftNode tree, RecipeData data, Sprite sprite, TechCategory category, TechGroup group, bool unlAtStart = false)
     {
         PrefInf = PrefabInfo.WithTechType(classId, null,null, Language.main.GetCurrentLanguage(), unlAtStart).WithIcon(sprite);
         Prefab = new CustomPrefab(PrefInf);
@@ -48,13 +48,13 @@ public class UpgradesPrefabs
         Prefab.SetRecipe(data).WithFabricatorType(CraftTree.Type.Fabricator)
             .WithStepsToFabricatorTab("Personal", "AIOHHFTab")
             .WithCraftingTime(3f);
-        Prefab.SetUnlock(TechType.PrecursorIonCrystal);
+        Prefab.SetUnlock(TechType.PrecursorIonCrystal).WithPdaGroupCategory(group, category);;
         Prefab.SetEquipment(Plugin.EquipmentType);
         Prefab.Register();
         if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefInf.ClassID} registered!");
     }
 
-    public UpgradesPrefabs(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, string lang = "English", bool unlAtStart = false)
+    public UpgradesPrefabs(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, TechCategory category, TechGroup group, string lang = "English", bool unlAtStart = false)
     {
         PrefInf = PrefabInfo.WithTechType(classId, title, desc, lang, unlAtStart).WithIcon(
                 SpriteManager.Get(techType));
@@ -67,7 +67,7 @@ public class UpgradesPrefabs
             .WithStepsToFabricatorTab("Personal", "AIOHHFTab")
             .WithCraftingTime(3f);
         Prefab.SetEquipment(Plugin.EquipmentType);
-        Prefab.SetUnlock(techType);
+        Prefab.SetUnlock(techType).WithPdaGroupCategory(group, category);;
         Prefab.Register();
         if (!Plugin.CustomFabricatorCache.TechTypeToCustomFabricator.ContainsKey(techType.AsString()))
             Plugin.CustomFabricatorCache.TechTypeToCustomFabricator.Add(techType.AsString(),new[]{classId,title,desc,unlAtStart.ToString()});
@@ -92,7 +92,7 @@ public class UpgradesPrefabs
         AwaitingTreeCatch.Add(techType, this);
     }
 
-    public void OnCraftTreeAcquired(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, string lang = "English", bool unlAtStart = false)
+    public void OnCraftTreeAcquired(string classId, string title, string desc, CraftNode tree, RecipeData data, TechType techType, TechCategory category, TechGroup group, string lang = "English")
     {
         var name = PrefInf.ClassID;
         PrefInf.ClassID = classId;
@@ -115,6 +115,12 @@ public class UpgradesPrefabs
         AllInOneHandHeldFabricator.Nodes.Add(PrefInf.TechType, Tree);
         CraftDataHandler.SetRecipeData(PrefInf.TechType, data);
         KnownTechHandler.SetAnalysisTechEntry(techType, new[] { PrefInf.TechType });
+        var categories = new List<TechCategory>();
+        CraftData.GetBuilderCategories(group, categories);
+        if (categories.Contains(category))
+        {
+            CraftDataHandler.AddToGroup(group, category, PrefInf.TechType);
+        }
         if (Plugin.ConfigFile.DebugMode) Plugin.Logger.LogDebug($"Prefab {PrefInf.ClassID} Successfully loaded!");
     }
 }

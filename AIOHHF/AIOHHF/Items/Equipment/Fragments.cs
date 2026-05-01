@@ -22,7 +22,7 @@ public static class Fragments
         yield return null;
         var fragments = FragmentsTechType = EnumHandler.AddEntry<TechType>("AIOHHFFragment").Value;
         var multiplier = Plugin.ConfigFile.SpawnRate;
-        var probability = 0.025f;
+        var probability = 0.01f;
         if (multiplier < 0) probability /= 0-multiplier;
         else if (multiplier > 0) probability *= multiplier;
         var biomesToSpawnIn = new List<LootDistributionData.BiomeData>();

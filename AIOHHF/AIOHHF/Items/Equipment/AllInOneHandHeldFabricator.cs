@@ -32,9 +32,11 @@ public class AllInOneHandHeldFabricator
     internal static bool Registered;
     internal static bool LateRegistered;
     internal static bool PrefabModified;
+    private static TechCategory techCategory;
+    private static TechGroup techGroup;
     private const string StorageName = "AIOHHFStorageChild";
     private const string StorageClassID = "AIOHHFStorageClassID";
-    private IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
+    private IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task, TechCategory techCategory, TechGroup techGroup)
     {
         task.Status = "Initializing All In One Hand Held Fabricator...";
         yield return null;
@@ -133,15 +135,11 @@ public class AllInOneHandHeldFabricator
             .WithFabricatorType(CraftTree.Type.Fabricator)
             .WithStepsToFabricatorTab("Personal","AIOHHFTab")
             .WithCraftingTime(5f);
-
         
         yield return Fragments.Initialize(task);
         task.Status = "Initializing All In One Hand Held Fabricator...";
         yield return null;
         Prefab.SetEquipment(EquipmentType.Hand);
-        var techGroup = EnumHandler.AddEntry<TechGroup>("AIOHHFGroup").WithPdaInfo(null).Value;
-        var techCategory = EnumHandler.AddEntry<TechCategory>("AIOHHFCategory").RegisterToTechGroup(techGroup)
-            .WithPdaInfo(null).Value;
         Prefab.SetUnlock(Fragments.FragmentsTechType, 3).WithPdaGroupCategory(techGroup, techCategory)
             .WithAnalysisTech(null, AudioUtils.GetFmodAsset("event:/tools/scanner/new_blueprint")).WithEncyclopediaEntry("Tech/Equipment", null);
         Prefab.Register();
@@ -156,7 +154,10 @@ public class AllInOneHandHeldFabricator
         
         _nodeRoot = new CraftNode("Root");
         //register the aiohhf
-        yield return Initialize(task);
+        techGroup = EnumHandler.AddEntry<TechGroup>("AIOHHFGroup").WithPdaInfo(null).Value;
+        techCategory = EnumHandler.AddEntry<TechCategory>("AIOHHFCategory").RegisterToTechGroup(techGroup)
+            .WithPdaInfo(null).Value;
+        yield return Initialize(task, techCategory, techGroup);
         
         //restore fabricators from Fabricator Cache
         Plugin.CustomFabricatorCache.Load();
@@ -191,12 +192,12 @@ public class AllInOneHandHeldFabricator
                 //do nothing with the vanilla ones since they are mapped manually
             }
             
-            _nodeRoot.AddNode(CraftTreeMethods.RegisterFabricatorUpgrade());
-            _nodeRoot.AddNode(CraftTreeMethods.RegisterWorkbenchUpgrade());
-            _nodeRoot.AddNode(CraftTreeMethods.RegisterCyclopsFabricatorUpgrade());
-            _nodeRoot.AddNode(CraftTreeMethods.RegisterScannerRoomUpgrade());
-            _nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade());
-            var precursorNode = CraftTreeMethods.RegisterPrecursorFabricatorUpgrade();
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterFabricatorUpgrade(techCategory, techGroup));
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterWorkbenchUpgrade(techCategory, techGroup));
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterCyclopsFabricatorUpgrade(techCategory, techGroup));
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterScannerRoomUpgrade(techCategory, techGroup));
+            _nodeRoot.AddNode(CraftTreeMethods.RegisterVehicleUpgradeConsoleUpgrade(techCategory, techGroup));
+            var precursorNode = CraftTreeMethods.RegisterPrecursorFabricatorUpgrade(techCategory, techGroup);
             if (!precursorNode.id.Equals("NRE")) _nodeRoot.AddNode(precursorNode);
     }
     
@@ -218,7 +219,7 @@ public class AllInOneHandHeldFabricator
             yield return null;
         }
         
-        foreach (var node in CraftTreeMethods.RegisterCustomFabricatorUpgrades())
+        foreach (var node in CraftTreeMethods.RegisterCustomFabricatorUpgrades(techCategory, techGroup))
         {
             _nodeRoot.AddNode(node);
             yield return null;
