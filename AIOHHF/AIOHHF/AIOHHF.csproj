@@ -32,25 +32,28 @@
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="EasyCraft">
-        <HintPath>..\..\..\..\..\..\Library\Application Support\Steam\steamapps\common\Subnautica\BepInEx\plugins\EasyCraft\EasyCraft.dll</HintPath>
-      </Reference>
-      <Reference Include="PrototypeSubMod">
-        <HintPath>..\..\..\..\..\..\Library\Application Support\Steam\steamapps\common\Subnautica\BepInEx\plugins\PrototypeSubMod\PrototypeSubMod.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-    
     <PropertyGroup>
         <!--If trying to build this project, please make sure the correct directory to your Subnautica folder is listed below:-->
-        <GameDir>../../../../../../Library/Application Support/Steam/steamapps/common/Subnautica</GameDir>
+        <GameDir>Z:\SteamLibrary\steamapps\common\Subnautica</GameDir>
     </PropertyGroup>
     <!--Defines the PluginsDir property for use in the Post-Build event-->
     <PropertyGroup>
         <PluginsDir>$(GameDir)\BepInEx\plugins</PluginsDir>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="EasyCraft">
+        <HintPath>$(PluginsDir)\..\uninstalled plugins\EasyCraft\EasyCraft.dll</HintPath>
+      </Reference>
+      <Reference Include="PrototypeSubMod">
+        <HintPath>$(PluginsDir)\PrototypeSubMod\PrototypeSubMod.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+    
+    
     <!--Post-Build event that automatically places your mods folder with the DLL and documentation into your plugins folder as defined in GameDir.targets-->
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <MakeDir Directories="$(PluginsDir)/AIOHHF"/>
       <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginsDir)/AIOHHF" />
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(PluginsDir)/AIOHHF"/>
         <Copy SourceFiles="$(ProjectDir)English.json" DestinationFolder="$(PluginsDir)/AIOHHF/Localization"/>

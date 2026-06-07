@@ -182,9 +182,7 @@ public class AllInOneHandHeldFabricator
                     && treeType != CraftTree.Type.MapRoom && treeType != CraftTree.Type.SeamothUpgrades) continue;
                 //get the techtypes for outliers because there is no techtype of "MapRoom" or "SeamothUpgrades"
                 if (techType == TechType.None)
-                    techType = treeType == CraftTree.Type.SeamothUpgrades
-                        ? TechType.BaseUpgradeConsole
-                        : TechType.BaseMapRoom;
+                    techType = treeType == CraftTree.Type.SeamothUpgrades ? TechType.BaseUpgradeConsole : TechType.BaseMapRoom;
                 //is it a custom craft tree?
                 if (EnumHandler.ModdedEnumExists<CraftTree.Type>(treeType.ToString()))
                     //add it if so
