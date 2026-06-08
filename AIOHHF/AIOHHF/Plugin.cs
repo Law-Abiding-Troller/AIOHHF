@@ -48,7 +48,7 @@ public class Plugin : BaseUnityPlugin
         ConfigFile = OptionsPanelHandler.RegisterModOptions<Config>();
 
         // register harmony patches, if there are any
-        PatchAll();
+        Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_NAME}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
         ModMessageSystem.SendGlobal("FindMyUpdates", "https://raw.githubusercontent.com/Law-Abiding-Developer/AIOHHF/refs/heads/main/AIOHHF/AIOHHF/Version.json");
         
@@ -84,22 +84,6 @@ public class Plugin : BaseUnityPlugin
             Equipment.slotMapping.Add(str, EquipmentType);
         }
         DataTypes.Slots.Add(new DataTypes(slots,Aiohhf.PrefabInfo.TechType));
-    }
-
-    public static void PatchAll()
-    {
-        var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
-        harmony.PatchAll(typeof(uGUI_CraftingMenuPatches));
-        if (ConfigFile.DebugMode) Logger.LogDebug("Patched uGUI_CraftingMenu");
-        harmony.PatchAll(typeof(GhostCrafterPatches));
-        if (ConfigFile.DebugMode) Logger.LogDebug("Patched GhostCrafter");
-        harmony.PatchAll(typeof(uGUI_EquipmentPatches));
-        if (ConfigFile.DebugMode) Logger.LogDebug("Patched uGUI_Equipment");
-        if (!Chainloader.PluginInfos.TryGetValue("sn.easycraft.mod", out var mod)) return;
-        if (mod == null) return;
-        if (mod.Instance == null) return;
-        harmony.PatchAll(typeof(ClosestFabricatorsPatches));
-        if (ConfigFile.DebugMode) Logger.LogDebug("Patched EasyCraft");
     }
 
     public static void SendCommands(params string[] commands)

@@ -1,7 +1,9 @@
 
 using System.Linq;
+using System.Reflection;
 using AIOHHF.Items.Equipment;
 using AIOHHF.Mono;
+using BepInEx.Bootstrap;
 using EasyCraft;
 using HarmonyLib;
 using UnityEngine;
@@ -133,15 +135,25 @@ public class uGUI_EquipmentPatches
     }
 }
 
-[HarmonyPatch(typeof(ClosestFabricators))]
+[HarmonyPatch]
 public class ClosestFabricatorsPatches
 {
-    [HarmonyPatch("Find"), HarmonyPostfix]
-    public static void Find_Patches(ref GhostCrafter[] __result)
+    public static MethodBase TargetMethod()
     {
-        var list = __result.ToList();
+        var type = AccessTools.TypeByName("EasyCraft.ClosestFabricators");
+        return AccessTools.Method(type, "Find");
+    }
+
+    public static bool Prepare(MethodBase original)
+    {
+        return Chainloader.PluginInfos.ContainsKey("sn.easycraft.mod");
+    }
+
+    public static GhostCrafter[] PostFix(GhostCrafter[] returnedValues)
+    {
+        var list = returnedValues.ToList();
         var listToAdd = Player.main.GetComponentsInChildren<GhostCrafter>();
         list.AddRange(listToAdd);
-        __result = list.ToArray();
+        return list.ToArray();
     }
 }
