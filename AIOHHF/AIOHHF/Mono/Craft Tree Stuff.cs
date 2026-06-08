@@ -93,6 +93,7 @@ public static class CraftTreeMethods
         if (!TechTypeExtensions.FromString(treeType.ToString(), out var tech, false))
             return new CraftNode("NRE");
         var craftTreeToYoink = CraftTree.GetTree(treeType);
+        if (craftTreeToYoink == null) return new CraftNode("NRE");
         var craftTreeTab = new CraftNode(craftTreeToYoink.id, TreeAction.Expand);
         var sprite = Plugin.Aiohhf.Bundle.LoadAsset<Sprite>("PrecursorFab");
         if (sprite != null) SpriteHandler.RegisterSprite(SpriteManager.Group.Category, $"{schemeId}_{craftTreeTab.id}", sprite);
